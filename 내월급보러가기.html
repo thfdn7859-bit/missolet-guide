@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>미솔랭 가이드 — 내 월급 보러가기</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #111111;
+      --bg3: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #ffffff;
+      --text-muted: #888888;
+      --purple: #9b59b6;
+      --purple-light: #b57cd4;
+      --purple-dim: rgba(155, 89, 182, 0.12);
+      --green: #27ae60;
+      --yellow: #f39c12;
+      --red: #e74c3c;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard', 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper {
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 0 0 80px 0;
+    }
+
+    /* ── 헤더 ── */
+    .header {
+      padding: 20px 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-badge {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      font-weight: 500;
+    }
+
+    .header-badge span {
+      color: var(--purple);
+    }
+
+    .page-title {
+      padding: 28px 20px 4px;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+    }
+
+    .page-subtitle {
+      padding: 0 20px 28px;
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* ── 섹션 타이틀 ── */
+    .section-title {
+      padding: 0 20px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ── 입력 카드 ── */
+    .input-group {
+      padding: 0 16px;
+      margin-bottom: 4px;
+    }
+
+    .input-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .input-item:focus-within {
+      border-color: var(--purple);
+    }
+
+    .input-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      flex-shrink: 0;
+      margin-right: 12px;
+    }
+
+    .input-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      justify-content: flex-end;
+    }
+
+    .input-field {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: right;
+      width: 140px;
+      caret-color: var(--purple);
+    }
+
+    .input-field::placeholder {
+      color: var(--border);
+      font-weight: 400;
+    }
+
+    .input-unit {
+      font-size: 13px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .input-korean {
+      font-size: 12px;
+      color: var(--purple-light);
+      font-weight: 500;
+      text-align: right;
+      min-height: 16px;
+      margin-top: 4px;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── 드롭다운 ── */
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .dropdown-item:focus-within {
+      border-color: var(--purple);
+    }
+
+    .dropdown-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      flex-shrink: 0;
+      margin-right: 12px;
+    }
+
+    .dropdown-select {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--purple-light);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: right;
+      cursor: pointer;
+      flex: 1;
+      appearance: none;
+      -webkit-appearance: none;
+      direction: rtl;
+      padding-right: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239b59b6' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left center;
+    }
+
+    .dropdown-select option {
+      background: #1a1a1a;
+      color: #ffffff;
+      direction: ltr;
+    }
+
+    /* ── 구분선 ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 20px;
+    }
+
+    /* ── 결과 섹션 ── */
+    .result-section {
+      padding: 0 16px;
+    }
+
+    /* 순이익 카드 */
+    .salary-card {
+      background: var(--purple-dim);
+      border: 1px solid rgba(155, 89, 182, 0.3);
+      border-radius: 16px;
+      padding: 24px 20px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .salary-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: var(--purple-light);
+      margin-bottom: 8px;
+    }
+
+    .salary-value {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--purple);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+    }
+
+    .salary-value.negative {
+      color: var(--red);
+    }
+
+    .salary-value.zero {
+      color: var(--text-muted);
+    }
+
+    /* 업종/지역 비교 배지 */
+    .benchmark-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+      justify-content: center;
+    }
+
+    .benchmark-badge {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(155, 89, 182, 0.08);
+      border: 1px solid rgba(155, 89, 182, 0.2);
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+
+    /* 진단 메시지 */
+    .diagnosis {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-align: center;
+      transition: all 0.3s;
+      line-height: 1.5;
+    }
+
+    .diagnosis.healthy {
+      border-color: rgba(39, 174, 96, 0.4);
+      background: rgba(39, 174, 96, 0.06);
+      color: var(--green);
+    }
+
+    .diagnosis.warning {
+      border-color: rgba(243, 156, 18, 0.4);
+      background: rgba(243, 156, 18, 0.06);
+      color: var(--yellow);
+    }
+
+    .diagnosis.danger {
+      border-color: rgba(231, 76, 60, 0.4);
+      background: rgba(231, 76, 60, 0.06);
+      color: var(--red);
+    }
+
+    /* 지표 그리드 */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .metric-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 14px;
+      transition: border-color 0.3s;
+    }
+
+    .metric-card.excellent {
+      border-color: rgba(39, 174, 96, 0.4);
+      background: rgba(39, 174, 96, 0.04);
+    }
+
+    .metric-card.good {
+      border-color: rgba(155, 89, 182, 0.3);
+      background: rgba(155, 89, 182, 0.04);
+    }
+
+    .metric-card.caution {
+      border-color: rgba(243, 156, 18, 0.4);
+      background: rgba(243, 156, 18, 0.04);
+    }
+
+    .metric-card.danger-card {
+      border-color: rgba(231, 76, 60, 0.4);
+      background: rgba(231, 76, 60, 0.04);
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .metric-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .metric-value.excellent {
+      color: var(--green);
+    }
+
+    .metric-value.good {
+      color: var(--purple);
+    }
+
+    .metric-value.warn {
+      color: var(--yellow);
+    }
+
+    .metric-value.danger {
+      color: var(--red);
+    }
+
+    .metric-grade {
+      font-size: 10px;
+      font-weight: 600;
+      margin-top: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-grade.excellent { color: var(--green); }
+    .metric-grade.good { color: var(--purple-light); }
+    .metric-grade.warn { color: var(--yellow); }
+    .metric-grade.danger { color: var(--red); }
+
+    /* 총 지출 카드 */
+    .total-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .total-card-label {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .total-card-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* 지난달 비교 */
+    .compare-section {
+      margin-top: 8px;
+    }
+
+    .compare-input-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color 0.2s;
+    }
+
+    .compare-input-item:focus-within {
+      border-color: rgba(155, 89, 182, 0.4);
+    }
+
+    .compare-result {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .compare-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .compare-value {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .compare-value.up {
+      color: var(--purple);
+    }
+
+    .compare-value.down {
+      color: var(--red);
+    }
+
+    .compare-value.neutral {
+      color: var(--text-muted);
+    }
+
+    /* 저장 + 초기화 버튼 */
+    .btn-wrap {
+      padding: 24px 16px 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    .save-btn {
+      flex: 2;
+      background: var(--purple);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .save-btn:hover { background: var(--purple-light); }
+    .save-btn:active { opacity: 0.85; }
+
+    .reset-btn {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .reset-btn:hover {
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    /* 히스토리 섹션 */
+    .history-section {
+      padding: 32px 16px 0;
+    }
+
+    .history-empty {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 24px 0;
+    }
+
+    .history-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 8px;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .history-date {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--purple-light);
+      letter-spacing: 0.02em;
+    }
+
+    .history-delete {
+      background: none;
+      border: none;
+      color: var(--border);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 0 2px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .history-delete:hover { color: var(--red); }
+
+    .history-salary {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--purple);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .history-salary.neg { color: var(--red); }
+
+    .history-meta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .history-tag {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--bg3);
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+
+    /* 반응형 미세조정 */
+    @media (max-width: 380px) {
+      .salary-value { font-size: 28px; }
+      .input-field { width: 110px; font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <!-- 헤더 -->
+    <div class="header">
+      <div class="header-badge">🟣 <span>미솔랭 가이드</span> &nbsp;BETA</div>
+    </div>
+
+    <div class="page-title">내 월급 보러가기</div>
+    <div class="page-subtitle">이번 달 매출과 지출을 입력하면<br>순이익을 바로 계산해드려요.</div>
+
+    <!-- 입력 섹션 -->
+    <div class="section-title">업종 / 지역 선택</div>
+    <div class="input-group">
+
+      <div class="dropdown-item">
+        <div class="dropdown-label">업종</div>
+        <select class="dropdown-select" id="business_type">
+          <option value="">선택하세요</option>
+          <option value="burger">버거/패스트푸드</option>
+          <option value="korean">한식당</option>
+          <option value="cafe">카페</option>
+          <option value="chicken">치킨</option>
+          <option value="pizza">피자</option>
+          <option value="general">일반 음식점</option>
+          <option value="japanese">일식 (라멘/스시/이자카야)</option>
+          <option value="chinese">중식</option>
+          <option value="bunsik">분식 (떡볶이/김밥/순대)</option>
+          <option value="bar">술집/포차</option>
+          <option value="convenience">편의점</option>
+          <option value="meat">고깃집 (삼겹살/소고기)</option>
+        </select>
+      </div>
+
+      <div class="dropdown-item">
+        <div class="dropdown-label">지역</div>
+        <select class="dropdown-select" id="region">
+          <option value="">선택하세요</option>
+          <option value="seoul">서울</option>
+          <option value="busan">부산</option>
+          <option value="daegu">대구</option>
+          <option value="incheon">인천</option>
+          <option value="gwangju">광주</option>
+          <option value="daejeon">대전</option>
+          <option value="ulsan">울산</option>
+          <option value="sejong">세종</option>
+          <option value="gyeonggi">경기</option>
+          <option value="gangwon">강원</option>
+          <option value="chungbuk">충북</option>
+          <option value="chungnam">충남</option>
+          <option value="jeonbuk">전북</option>
+          <option value="jeonnam">전남</option>
+          <option value="gyeongbuk">경북</option>
+          <option value="gyeongnam">경남</option>
+          <option value="jeju">제주</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="section-title" style="padding-top:8px;">이번 달 매출 / 지출</div>
+    <div class="input-group">
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">이번 달 총 매출</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="revenue" placeholder="140,000,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="revenue_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">식재료비 (원가)</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="food_cost" placeholder="42,000,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="food_cost_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">인건비 (전체)</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="labor" placeholder="35,000,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="labor_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">임차료 (월세)</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="rent" placeholder="8,000,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="rent_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">배달앱 수수료</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="delivery" placeholder="7,000,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="delivery_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">기타 고정비</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="etc" placeholder="3,000,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="etc_kor"></div>
+      </div>
+
+    </div>
+
+    <!-- 공과금 -->
+    <div class="section-title" style="padding-top:20px;">공과금</div>
+    <div class="input-group">
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">전기세</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="electric" placeholder="500,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="electric_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">가스비</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="gas" placeholder="300,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="gas_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">수도세</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="water" placeholder="100,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="water_kor"></div>
+      </div>
+
+    </div>
+
+    <!-- 보험료 -->
+    <div class="section-title" style="padding-top:20px;">보험료</div>
+    <div style="padding: 0 16px 10px; font-size:11px; color:var(--text-muted); line-height:1.6;">
+      💡 자영업자 주요 보험: 노란우산공제 · 고용보험(자영업자) · 화재보험 · 배상책임보험 · 산재보험
+    </div>
+    <div class="input-group">
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">노란우산공제</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="ins_noran" placeholder="300,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="ins_noran_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">화재 · 배상책임보험</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="ins_fire" placeholder="50,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="ins_fire_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">고용 · 산재보험</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="ins_labor" placeholder="200,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="ins_labor_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">기타 보험</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="ins_etc" placeholder="0" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="ins_etc_kor"></div>
+      </div>
+
+    </div>
+
+    <!-- 사업자카드 지출 -->
+    <div class="section-title" style="padding-top:20px;">사업자카드 지출</div>
+    <div style="padding: 0 16px 10px; font-size:11px; color:var(--text-muted); line-height:1.6;">
+      💡 소모품·비품·마케팅·외식비 등 사업자카드로 결제한 금액
+    </div>
+    <div class="input-group">
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">소모품 · 비품</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="card_supply" placeholder="500,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="card_supply_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">마케팅 · 광고</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="card_mkt" placeholder="200,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="card_mkt_kor"></div>
+      </div>
+
+      <div class="input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">기타 카드 지출</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="card_etc" placeholder="0" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="card_etc_kor"></div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 결과 섹션 -->
+    <div class="section-title">이번 달 결과</div>
+    <div class="result-section">
+
+      <!-- 순이익 (내 월급) -->
+      <div class="salary-card">
+        <div class="salary-label">내 월급 (순이익)</div>
+        <div class="salary-value zero" id="salary_value">—</div>
+        <div class="benchmark-badges" id="benchmark_badges"></div>
+      </div>
+
+      <!-- 진단 -->
+      <div class="diagnosis" id="diagnosis">업종과 지역을 선택하고 숫자를 입력하면 진단이 표시됩니다</div>
+
+      <!-- 지표 -->
+      <div class="metrics-grid">
+        <div class="metric-card" id="card_food">
+          <div class="metric-label">원가율</div>
+          <div class="metric-value" id="food_pct">—</div>
+          <div class="metric-grade" id="food_grade"></div>
+        </div>
+        <div class="metric-card" id="card_labor">
+          <div class="metric-label">인건비율</div>
+          <div class="metric-value" id="labor_pct">—</div>
+          <div class="metric-grade" id="labor_grade"></div>
+        </div>
+        <div class="metric-card" id="card_prime" style="grid-column: span 2;">
+          <div class="metric-label">Prime Cost (원가 + 인건비)</div>
+          <div class="metric-value" id="prime_cost">—</div>
+          <div class="metric-grade" id="prime_grade"></div>
+        </div>
+        <div class="metric-card" id="card_rent" style="grid-column: span 2;">
+          <div class="metric-label">임대료율</div>
+          <div class="metric-value" id="rent_pct">—</div>
+          <div class="metric-grade" id="rent_grade"></div>
+        </div>
+      </div>
+
+      <!-- 총 지출 -->
+      <div class="total-card">
+        <div class="total-card-label">총 지출</div>
+        <div class="total-card-value" id="total_expense">—</div>
+      </div>
+
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 지난달 비교 -->
+    <div class="section-title">이전 달 비교</div>
+    <div class="result-section compare-section">
+
+      <div class="compare-input-item" style="flex-direction: column; align-items: stretch; gap: 6px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="input-label">지난달 순이익</div>
+          <div class="input-right">
+            <input type="text" inputmode="numeric" class="input-field" id="last_salary" placeholder="3,800,000" />
+            <span class="input-unit">원</span>
+          </div>
+        </div>
+        <div class="input-korean" id="last_salary_kor"></div>
+      </div>
+
+      <div class="compare-result">
+        <div class="compare-label">전월 대비</div>
+        <div class="compare-value neutral" id="compare_value">—</div>
+      </div>
+
+    </div>
+
+    <!-- 저장 + 초기화 -->
+    <div class="btn-wrap">
+      <button class="save-btn" id="save_btn">💾 이번 달 저장</button>
+      <button class="reset-btn" id="reset_btn">초기화</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 히스토리 -->
+    <div class="section-title">저장된 기록</div>
+    <div class="history-section" id="history_section">
+      <div class="history-empty" id="history_empty">아직 저장된 기록이 없어요</div>
+    </div>
+
+  </div>
+
+  <script>
+    const fields = ['revenue', 'food_cost', 'labor', 'rent', 'delivery', 'etc',
+                    'electric', 'gas', 'water',
+                    'ins_noran', 'ins_fire', 'ins_labor', 'ins_etc',
+                    'card_supply', 'card_mkt', 'card_etc',
+                    'last_salary'];
+
+    // ── 업종별 기준 데이터 ──
+    const BENCHMARKS = {
+      burger:      { name: '버거/패스트푸드', avgProfit: '8~12', food: [32,38,42], labor: [25,30,35], prime: [58,63,68] },
+      korean:      { name: '한식당',          avgProfit: '5~10', food: [36,42,48], labor: [28,35,40], prime: [62,68,75] },
+      cafe:        { name: '카페',            avgProfit: '10~18', food: [22,30,36], labor: [25,32,38], prime: [50,58,64] },
+      chicken:     { name: '치킨',            avgProfit: '8~15', food: [30,37,42], labor: [15,20,25], prime: [45,55,60] },
+      pizza:       { name: '피자',            avgProfit: '7~12', food: [28,36,42], labor: [20,27,32], prime: [50,62,68] },
+      general:     { name: '일반 음식점',     avgProfit: '5~10', food: [36,44,50], labor: [28,35,42], prime: [60,68,75] },
+      japanese:    { name: '일식',            avgProfit: '8~15', food: [30,38,45], labor: [28,35,42], prime: [60,68,75] },
+      chinese:     { name: '중식',            avgProfit: '7~12', food: [32,40,47], labor: [25,33,38], prime: [58,68,75] },
+      bunsik:      { name: '분식',            avgProfit: '10~18', food: [25,33,38], labor: [22,30,35], prime: [48,58,65] },
+      bar:         { name: '술집/포차',       avgProfit: '10~20', food: [25,33,40], labor: [22,30,38], prime: [48,58,65] },
+      convenience: { name: '편의점',          avgProfit: '3~8',  food: [68,72,75], labor: [15,25,30], prime: [83,90,95] },
+      meat:        { name: '고깃집',          avgProfit: '5~10', food: [38,48,55], labor: [25,33,40], prime: [65,73,80] },
+    };
+
+    // ── 지역별 임대료율 기준 ──
+    const RENT_BENCHMARKS = {
+      seoul:     { label: '서울', thresholds: [6, 10, 15], note: '권장 6% 이하' },
+      busan:     { label: '부산', thresholds: [5, 9, 13],  note: '권장 5% 이하' },
+      daegu:     { label: '대구', thresholds: [5, 8, 12],  note: '권장 5% 이하' },
+      incheon:   { label: '인천', thresholds: [5, 9, 13],  note: '권장 5% 이하' },
+      gwangju:   { label: '광주', thresholds: [5, 8, 12],  note: '권장 5% 이하' },
+      daejeon:   { label: '대전', thresholds: [5, 8, 12],  note: '권장 5% 이하' },
+      ulsan:     { label: '울산', thresholds: [5, 8, 12],  note: '권장 5% 이하' },
+      sejong:    { label: '세종', thresholds: [4, 7, 10],  note: '권장 4% 이하' },
+      gyeonggi:  { label: '경기', thresholds: [5, 9, 13],  note: '권장 5% 이하' },
+      gangwon:   { label: '강원', thresholds: [4, 7, 10],  note: '권장 4% 이하' },
+      chungbuk:  { label: '충북', thresholds: [4, 7, 10],  note: '권장 4% 이하' },
+      chungnam:  { label: '충남', thresholds: [4, 7, 10],  note: '권장 4% 이하' },
+      jeonbuk:   { label: '전북', thresholds: [4, 7, 10],  note: '권장 4% 이하' },
+      jeonnam:   { label: '전남', thresholds: [4, 7, 10],  note: '권장 4% 이하' },
+      gyeongbuk: { label: '경북', thresholds: [4, 7, 10],  note: '권장 4% 이하' },
+      gyeongnam: { label: '경남', thresholds: [4, 7, 10],  note: '권장 4% 이하' },
+      jeju:      { label: '제주', thresholds: [5, 9, 13],  note: '권장 5% 이하' },
+    };
+
+    // ── 등급 판정 (thresholds: [good, caution, danger]) ──
+    // 우수: < thresholds[0], 양호: [0]~[1], 주의: [1]~[2], 위험: >= [2]
+    function getGrade(val, thresholds) {
+      if (val === null || isNaN(val)) return null;
+      if (val < thresholds[0]) return 'excellent';
+      if (val < thresholds[1]) return 'good';
+      if (val < thresholds[2]) return 'caution';
+      return 'danger';
+    }
+
+    const GRADE_LABELS = {
+      excellent: '우수 ✦',
+      good:      '양호 ●',
+      caution:   '주의 ▲',
+      danger:    '위험 ✕',
+    };
+
+    const GRADE_COLOR = {
+      excellent: 'excellent',
+      good:      'good',
+      caution:   'warn',
+      danger:    'danger',
+    };
+
+    // ── 숫자 → 한글 변환 ──
+    function toKorean(n) {
+      if (!n || n === 0) return '';
+      const units = ['', '만', '억', '조'];
+      const parts = [];
+      let num = Math.abs(n);
+      let unitIdx = 0;
+      while (num > 0) {
+        const chunk = num % 10000;
+        if (chunk > 0) parts.unshift(chunk.toLocaleString('ko-KR') + units[unitIdx]);
+        num = Math.floor(num / 10000);
+        unitIdx++;
+      }
+      return (n < 0 ? '-' : '') + parts.join(' ');
+    }
+
+    function updateKorean(inputId, korId) {
+      const val = parseNum(document.getElementById(inputId).value);
+      const korEl = document.getElementById(korId);
+      if (korEl) korEl.textContent = val > 0 ? toKorean(val) + '원' : '';
+    }
+
+    // ── 유틸 ──
+    function parseNum(str) {
+      const n = parseInt(str.replace(/,/g, ''), 10);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function formatKRW(n) {
+      return n.toLocaleString('ko-KR') + '원';
+    }
+
+    function pct(num, denom) {
+      if (!denom) return null;
+      return ((num / denom) * 100).toFixed(1) + '%';
+    }
+
+    function pctNum(num, denom) {
+      if (!denom) return null;
+      return (num / denom) * 100;
+    }
+
+    // ── 콤마 포맷 ──
+    function attachCommaFormat(id) {
+      const el = document.getElementById(id);
+      el.addEventListener('input', () => {
+        const raw = el.value.replace(/,/g, '').replace(/[^0-9]/g, '');
+        if (raw === '') { el.value = ''; }
+        else {
+          const pos = el.selectionStart;
+          const oldLen = el.value.length;
+          el.value = parseInt(raw, 10).toLocaleString('ko-KR');
+          const diff = el.value.length - oldLen;
+          el.setSelectionRange(pos + diff, pos + diff);
+        }
+        calculate();
+      });
+    }
+
+    fields.forEach(attachCommaFormat);
+
+    // 드롭다운 변경 시 재계산
+    document.getElementById('business_type').addEventListener('change', calculate);
+    document.getElementById('region').addEventListener('change', calculate);
+
+    // 한글 표기 연동
+    const korMap = {
+      revenue: 'revenue_kor',
+      food_cost: 'food_cost_kor',
+      labor: 'labor_kor',
+      rent: 'rent_kor',
+      delivery: 'delivery_kor',
+      etc: 'etc_kor',
+      electric: 'electric_kor',
+      gas: 'gas_kor',
+      water: 'water_kor',
+      ins_noran: 'ins_noran_kor',
+      ins_fire: 'ins_fire_kor',
+      ins_labor: 'ins_labor_kor',
+      ins_etc: 'ins_etc_kor',
+      card_supply: 'card_supply_kor',
+      card_mkt: 'card_mkt_kor',
+      card_etc: 'card_etc_kor',
+      last_salary: 'last_salary_kor'
+    };
+    fields.forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        updateKorean(id, korMap[id]);
+      });
+    });
+
+    // ── 지표 카드 색상 업데이트 ──
+    function applyMetricCard(cardId, valueId, gradeId, val, thresholds) {
+      const card  = document.getElementById(cardId);
+      const valEl = document.getElementById(valueId);
+      const gradeEl = document.getElementById(gradeId);
+
+      const grade = getGrade(val, thresholds);
+
+      // 카드 테두리
+      card.className = 'metric-card' + (grade ? ` ${grade === 'caution' ? 'caution' : grade === 'danger' ? 'danger-card' : grade}` : '');
+      if (card.style.gridColumn) card.style.gridColumn = card.style.gridColumn; // preserve
+
+      // 값 색상
+      if (grade) {
+        valEl.className = 'metric-value ' + GRADE_COLOR[grade];
+      } else {
+        valEl.className = 'metric-value';
+      }
+
+      // 등급 텍스트
+      if (grade) {
+        gradeEl.textContent = GRADE_LABELS[grade];
+        gradeEl.className = 'metric-grade ' + GRADE_COLOR[grade];
+      } else {
+        gradeEl.textContent = '';
+        gradeEl.className = 'metric-grade';
+      }
+    }
+
+    // ── 진단 메시지 생성 ──
+    function buildDiagnosis(businessType, region, foodGrade, laborGrade, primeGrade, rentGrade, primeCostNum) {
+      const biz = BENCHMARKS[businessType];
+      const reg = RENT_BENCHMARKS[region];
+
+      if (!biz && !reg) {
+        // 기본 진단 (업종/지역 미선택)
+        if (primeCostNum === null) return { text: '숫자를 입력하면 진단이 표시됩니다', cls: '' };
+        if (primeCostNum <= 60) return { text: '✅ 건강한 구조예요', cls: 'healthy' };
+        if (primeCostNum <= 70) return { text: '⚠️ 조금 타이트해요. 원가 점검해보세요', cls: 'warning' };
+        return { text: '🚨 지금 구조로는 위험해요', cls: 'danger' };
+      }
+
+      if (primeCostNum === null) {
+        return { text: '숫자를 입력하면 진단이 표시됩니다', cls: '' };
+      }
+
+      const bizName  = biz ? biz.name : '';
+      const regName  = reg ? reg.label : '';
+      const prefix   = [regName, bizName].filter(Boolean).join(' ');
+
+      // Prime Cost 기반 주요 진단
+      if (primeGrade === 'excellent') {
+        return { text: `✅ ${prefix} 기준 Prime Cost 우수 구간이에요 (상위 약 20%)`, cls: 'healthy' };
+      }
+      if (primeGrade === 'good') {
+        return { text: `✅ ${prefix} 기준 Prime Cost 양호 구간이에요 (전국 상위 약 30%)`, cls: 'healthy' };
+      }
+
+      // 원가율 위험이 가장 심한 경우
+      if (foodGrade === 'danger') {
+        const tip = businessType === 'meat' ? '고기 단가 점검이 필요해요'
+                  : businessType === 'cafe' ? '원두·식재료 원가 점검이 필요해요'
+                  : businessType === 'convenience' ? '마진율 재검토가 필요해요'
+                  : '식재료 단가 점검이 필요해요';
+        return { text: `🚨 ${bizName} 원가율 위험 구간 — ${tip}`, cls: 'danger' };
+      }
+
+      if (primeGrade === 'caution') {
+        return { text: `⚠️ ${prefix} 기준 Prime Cost가 주의 구간이에요. 원가·인건비 중 하나는 잡아야 해요`, cls: 'warning' };
+      }
+
+      if (primeGrade === 'danger') {
+        return { text: `🚨 ${prefix} Prime Cost 위험 구간 — 이 구조로는 수익이 나기 어려워요`, cls: 'danger' };
+      }
+
+      if (rentGrade === 'danger') {
+        return { text: `🚨 ${regName} 기준 임대료율 위험 구간이에요 — 매출 확대 또는 임대 재협상을 고려해보세요`, cls: 'danger' };
+      }
+
+      if (rentGrade === 'caution') {
+        return { text: `⚠️ ${regName} 기준 임대료율이 높아요. 매출 대비 임대 부담이 커지고 있어요`, cls: 'warning' };
+      }
+
+      return { text: `✅ ${prefix} 기준 전반적으로 안정적인 구조예요`, cls: 'healthy' };
+    }
+
+    // ── 계산 ──
+    function calculate() {
+      const businessType = document.getElementById('business_type').value;
+      const region       = document.getElementById('region').value;
+
+      const revenue     = parseNum(document.getElementById('revenue').value);
+      const food_cost   = parseNum(document.getElementById('food_cost').value);
+      const labor       = parseNum(document.getElementById('labor').value);
+      const rent        = parseNum(document.getElementById('rent').value);
+      const delivery    = parseNum(document.getElementById('delivery').value);
+      const etc         = parseNum(document.getElementById('etc').value);
+      const electric    = parseNum(document.getElementById('electric').value);
+      const gas         = parseNum(document.getElementById('gas').value);
+      const water       = parseNum(document.getElementById('water').value);
+      const ins_noran   = parseNum(document.getElementById('ins_noran').value);
+      const ins_fire    = parseNum(document.getElementById('ins_fire').value);
+      const ins_labor   = parseNum(document.getElementById('ins_labor').value);
+      const ins_etc     = parseNum(document.getElementById('ins_etc').value);
+      const card_supply = parseNum(document.getElementById('card_supply').value);
+      const card_mkt    = parseNum(document.getElementById('card_mkt').value);
+      const card_etc    = parseNum(document.getElementById('card_etc').value);
+      const last_sal    = parseNum(document.getElementById('last_salary').value);
+
+      const totalExpense = food_cost + labor + rent + delivery + etc
+                         + electric + gas + water
+                         + ins_noran + ins_fire + ins_labor + ins_etc
+                         + card_supply + card_mkt + card_etc;
+      const salary = revenue - totalExpense;
+
+      const foodPctNum  = pctNum(food_cost, revenue);
+      const laborPctNum = pctNum(labor, revenue);
+      const primeCostNum = revenue ? ((food_cost + labor) / revenue) * 100 : null;
+      const rentPctNum  = pctNum(rent, revenue);
+
+      // 벤치마크
+      const biz = BENCHMARKS[businessType] || null;
+      const reg = RENT_BENCHMARKS[region] || null;
+
+      const foodThresholds  = biz ? biz.food  : [30, 35, 40];
+      const laborThresholds = biz ? biz.labor : [28, 33, 38];
+      const primeThresholds = biz ? biz.prime : [60, 68, 75];
+      const rentThresholds  = reg ? reg.thresholds : [5, 9, 13];
+
+      const foodGrade  = getGrade(foodPctNum,   foodThresholds);
+      const laborGrade = getGrade(laborPctNum,  laborThresholds);
+      const primeGrade = getGrade(primeCostNum, primeThresholds);
+      const rentGrade  = getGrade(rentPctNum,   rentThresholds);
+
+      // 순이익
+      const salaryEl = document.getElementById('salary_value');
+      if (revenue === 0 && totalExpense === 0) {
+        salaryEl.textContent = '—';
+        salaryEl.className = 'salary-value zero';
+      } else {
+        salaryEl.textContent = formatKRW(salary);
+        salaryEl.className = 'salary-value' + (salary < 0 ? ' negative' : '');
+      }
+
+      // 비교 배지
+      const badgesEl = document.getElementById('benchmark_badges');
+      const badges = [];
+      if (biz && revenue > 0) {
+        badges.push(`${biz.name} 평균 순이익 ${biz.avgProfit}%`);
+      }
+      if (reg && revenue > 0) {
+        badges.push(`${reg.label} 임대료율 ${reg.note}`);
+      }
+      badgesEl.innerHTML = badges.map(b => `<span class="benchmark-badge">${b}</span>`).join('');
+
+      // 진단
+      const diagEl = document.getElementById('diagnosis');
+      if (revenue === 0 && totalExpense === 0) {
+        diagEl.textContent = '업종과 지역을 선택하고 숫자를 입력하면 진단이 표시됩니다';
+        diagEl.className = 'diagnosis';
+      } else {
+        const diag = buildDiagnosis(businessType, region, foodGrade, laborGrade, primeGrade, rentGrade, primeCostNum);
+        diagEl.textContent = diag.text;
+        diagEl.className = 'diagnosis' + (diag.cls ? ` ${diag.cls}` : '');
+      }
+
+      // 원가율
+      const foodEl = document.getElementById('food_pct');
+      foodEl.textContent = foodPctNum !== null ? foodPctNum.toFixed(1) + '%' : '—';
+      applyMetricCard('card_food', 'food_pct', 'food_grade', foodPctNum, foodThresholds);
+
+      // 인건비율
+      const laborEl = document.getElementById('labor_pct');
+      laborEl.textContent = laborPctNum !== null ? laborPctNum.toFixed(1) + '%' : '—';
+      applyMetricCard('card_labor', 'labor_pct', 'labor_grade', laborPctNum, laborThresholds);
+
+      // Prime Cost
+      const primeEl = document.getElementById('prime_cost');
+      if (primeCostNum === null) {
+        primeEl.textContent = '—';
+      } else {
+        primeEl.textContent = primeCostNum.toFixed(1) + '%';
+      }
+      // prime card grid-column 보존
+      const primeCard = document.getElementById('card_prime');
+      primeCard.style.gridColumn = 'span 2';
+      applyMetricCard('card_prime', 'prime_cost', 'prime_grade', primeCostNum, primeThresholds);
+      primeCard.style.gridColumn = 'span 2';
+
+      // 임대료율
+      const rentEl = document.getElementById('rent_pct');
+      if (rentPctNum === null) {
+        rentEl.textContent = '—';
+      } else {
+        rentEl.textContent = rentPctNum.toFixed(1) + '%';
+      }
+      const rentCard = document.getElementById('card_rent');
+      rentCard.style.gridColumn = 'span 2';
+      applyMetricCard('card_rent', 'rent_pct', 'rent_grade', rentPctNum, rentThresholds);
+      rentCard.style.gridColumn = 'span 2';
+
+      // 총 지출
+      const expEl = document.getElementById('total_expense');
+      expEl.textContent = totalExpense > 0 ? formatKRW(totalExpense) : '—';
+
+      // 지난달 비교
+      const compareEl = document.getElementById('compare_value');
+      if (last_sal === 0 || (revenue === 0 && totalExpense === 0)) {
+        compareEl.textContent = '—';
+        compareEl.className = 'compare-value neutral';
+      } else {
+        const diff = salary - last_sal;
+        if (diff > 0) {
+          compareEl.textContent = '▲ ' + formatKRW(diff);
+          compareEl.className = 'compare-value up';
+        } else if (diff < 0) {
+          compareEl.textContent = '▼ ' + formatKRW(Math.abs(diff));
+          compareEl.className = 'compare-value down';
+        } else {
+          compareEl.textContent = '= 변동 없음';
+          compareEl.className = 'compare-value neutral';
+        }
+      }
+    }
+
+    // ── 초기화 ──
+    document.getElementById('reset_btn').addEventListener('click', () => {
+      fields.forEach(id => {
+        document.getElementById(id).value = '';
+        const korEl = document.getElementById(korMap[id]);
+        if (korEl) korEl.textContent = '';
+      });
+      document.getElementById('business_type').value = '';
+      document.getElementById('region').value = '';
+      calculate();
+    });
+
+    // ── 히스토리 ──
+    function getHistory() {
+      try { return JSON.parse(localStorage.getItem('missolet_history') || '[]'); }
+      catch { return []; }
+    }
+
+    function saveHistory(list) {
+      localStorage.setItem('missolet_history', JSON.stringify(list));
+    }
+
+    function renderHistory() {
+      const list = getHistory();
+      const section = document.getElementById('history_section');
+      const empty   = document.getElementById('history_empty');
+
+      Array.from(section.querySelectorAll('.history-item')).forEach(el => el.remove());
+
+      if (list.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+
+      [...list].reverse().forEach((item, idx) => {
+        const realIdx = list.length - 1 - idx;
+        const card = document.createElement('div');
+        card.className = 'history-item';
+
+        const salaryClass = item.salary < 0 ? 'history-salary neg' : 'history-salary';
+        const salaryKor   = toKorean(Math.abs(item.salary));
+        const sign        = item.salary < 0 ? '-' : '';
+
+        const bizName = item.businessType && BENCHMARKS[item.businessType] ? BENCHMARKS[item.businessType].name : '';
+        const regName = item.region && RENT_BENCHMARKS[item.region] ? RENT_BENCHMARKS[item.region].label : '';
+
+        card.innerHTML = `
+          <div class="history-header">
+            <div class="history-date">${item.year}년 ${item.month}월${bizName ? ` · ${bizName}` : ''}${regName ? ` · ${regName}` : ''}</div>
+            <button class="history-delete" data-idx="${realIdx}" title="삭제">✕</button>
+          </div>
+          <div class="${salaryClass}">${sign}${item.salary.toLocaleString('ko-KR')}원</div>
+          <div style="font-size:12px;color:var(--purple-light);margin-bottom:8px;">${sign}${salaryKor}원</div>
+          <div class="history-meta">
+            <span class="history-tag">매출 ${toKorean(item.revenue)}원</span>
+            <span class="history-tag">원가율 ${item.foodPct}</span>
+            <span class="history-tag">임대료율 ${item.rentPct || '—'}</span>
+            <span class="history-tag">Prime ${item.primeCost}</span>
+            <span class="history-tag">${item.diagnosis}</span>
+          </div>
+        `;
+        section.appendChild(card);
+      });
+
+      section.querySelectorAll('.history-delete').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = parseInt(btn.dataset.idx);
+          const list = getHistory();
+          list.splice(i, 1);
+          saveHistory(list);
+          renderHistory();
+        });
+      });
+    }
+
+    // ── 저장 버튼 ──
+    document.getElementById('save_btn').addEventListener('click', () => {
+      const businessType = document.getElementById('business_type').value;
+      const region       = document.getElementById('region').value;
+
+      const revenue     = parseNum(document.getElementById('revenue').value);
+      const food_cost   = parseNum(document.getElementById('food_cost').value);
+      const labor       = parseNum(document.getElementById('labor').value);
+      const rent        = parseNum(document.getElementById('rent').value);
+      const delivery    = parseNum(document.getElementById('delivery').value);
+      const etc         = parseNum(document.getElementById('etc').value);
+      const electric    = parseNum(document.getElementById('electric').value);
+      const gas         = parseNum(document.getElementById('gas').value);
+      const water       = parseNum(document.getElementById('water').value);
+      const ins_noran   = parseNum(document.getElementById('ins_noran').value);
+      const ins_fire    = parseNum(document.getElementById('ins_fire').value);
+      const ins_labor   = parseNum(document.getElementById('ins_labor').value);
+      const ins_etc     = parseNum(document.getElementById('ins_etc').value);
+      const card_supply = parseNum(document.getElementById('card_supply').value);
+      const card_mkt    = parseNum(document.getElementById('card_mkt').value);
+      const card_etc    = parseNum(document.getElementById('card_etc').value);
+
+      if (revenue === 0) {
+        alert('매출을 먼저 입력해주세요.');
+        return;
+      }
+
+      const totalExpense = food_cost + labor + rent + delivery + etc
+                         + electric + gas + water
+                         + ins_noran + ins_fire + ins_labor + ins_etc
+                         + card_supply + card_mkt + card_etc;
+      const salary = revenue - totalExpense;
+
+      const biz = BENCHMARKS[businessType] || null;
+      const reg = RENT_BENCHMARKS[region] || null;
+      const primeThresholds = biz ? biz.prime : [60, 68, 75];
+      const primeCostNum = revenue ? ((food_cost + labor) / revenue) * 100 : 0;
+      const primeGrade = getGrade(primeCostNum, primeThresholds);
+
+      const foodPctVal  = revenue ? ((food_cost / revenue) * 100).toFixed(1) + '%' : '—';
+      const rentPctVal  = revenue ? ((rent / revenue) * 100).toFixed(1) + '%' : '—';
+      const primeCostVal = revenue ? (((food_cost + labor) / revenue) * 100).toFixed(1) + '%' : '—';
+
+      let diagText = '—';
+      if (revenue > 0) {
+        if (primeGrade === 'excellent') diagText = '우수';
+        else if (primeGrade === 'good')  diagText = '양호';
+        else if (primeGrade === 'caution') diagText = '주의';
+        else diagText = '위험';
+      }
+
+      const now = new Date();
+      const record = {
+        year: now.getFullYear(),
+        month: now.getMonth() + 1,
+        savedAt: now.toISOString(),
+        businessType, region,
+        revenue, food_cost, labor, rent, delivery, etc,
+        electric, gas, water,
+        ins_noran, ins_fire, ins_labor, ins_etc,
+        card_supply, card_mkt, card_etc,
+        salary, totalExpense,
+        foodPct: foodPctVal,
+        rentPct: rentPctVal,
+        primeCost: primeCostVal,
+        diagnosis: diagText
+      };
+
+      const list = getHistory();
+      const existIdx = list.findIndex(r => r.year === record.year && r.month === record.month);
+      if (existIdx >= 0) {
+        if (!confirm(`${record.year}년 ${record.month}월 기록이 이미 있어요.\n덮어쓸까요?`)) return;
+        list[existIdx] = record;
+      } else {
+        list.push(record);
+      }
+
+      saveHistory(list);
+      renderHistory();
+
+      const btn = document.getElementById('save_btn');
+      btn.textContent = '✅ 저장됐어요';
+      setTimeout(() => { btn.textContent = '💾 이번 달 저장'; }, 1800);
+    });
+
+    // 초기 실행
+    calculate();
+    renderHistory();
+  </script>
+</body>
+</html>
