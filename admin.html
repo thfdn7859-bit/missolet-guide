@@ -393,8 +393,12 @@
     <div class="section-title">핵심 지표</div>
     <div class="metrics-grid">
       <div class="metric-card">
-        <div class="metric-label">총 활성 유저</div>
+        <div class="metric-label">총 가입자</div>
         <div class="metric-value" id="m-users">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">이번 주 신규</div>
+        <div class="metric-value" id="m-new-week">—</div>
       </div>
       <div class="metric-card">
         <div class="metric-label">총 저장 횟수</div>
@@ -536,18 +540,20 @@
 
   // ① Metrics
   async function loadMetrics() {
-    // Total count
+    // 실제 가입자 수 (user_stats 뷰)
+    const { data: statsData } = await sb
+      .from('user_stats')
+      .select('*')
+      .single();
+    const totalUsers   = statsData?.total_users   ?? 0;
+    const newThisWeek  = statsData?.new_this_week  ?? 0;
+
+    // 총 저장 횟수
     const { count: total } = await sb
       .from('calculations')
       .select('*', { count: 'exact', head: true });
 
-    // Unique users
-    const { data: uData } = await sb
-      .from('calculations')
-      .select('user_id');
-    const uniqueUsers = uData ? new Set(uData.map(r => r.user_id).filter(Boolean)).size : 0;
-
-    // Today
+    // 오늘 저장
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
     const { count: todayCount } = await sb
@@ -555,7 +561,7 @@
       .select('*', { count: 'exact', head: true })
       .gte('created_at', todayStart.toISOString());
 
-    // Avg profit
+    // 평균 순이익률
     const { data: profitData } = await sb
       .from('calculations')
       .select('순이익률');
@@ -565,9 +571,10 @@
       if (valid.length) avgProfit = valid.reduce((a, b) => a + b, 0) / valid.length;
     }
 
-    document.getElementById('m-users').textContent = uniqueUsers.toLocaleString();
-    document.getElementById('m-total').textContent = (total ?? 0).toLocaleString();
-    document.getElementById('m-today').textContent = (todayCount ?? 0).toLocaleString();
+    document.getElementById('m-users').textContent    = totalUsers.toLocaleString();
+    document.getElementById('m-new-week').textContent = newThisWeek.toLocaleString();
+    document.getElementById('m-total').textContent    = (total ?? 0).toLocaleString();
+    document.getElementById('m-today').textContent    = (todayCount ?? 0).toLocaleString();
     document.getElementById('m-avg-profit').textContent =
       avgProfit !== null ? avgProfit.toFixed(1) + '%' : '—';
   }
