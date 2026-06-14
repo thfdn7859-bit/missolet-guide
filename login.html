@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로그인 — MISSOLET GUIDE</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" />
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0A0A0A;
+      --card: #141414;
+      --border: #2A2A2A;
+      --text: #FFFFFF;
+      --muted: #888888;
+      --gold: #C8A97E;
+      --gold-dim: rgba(200, 169, 126, 0.15);
+      --kakao: #FEE500;
+      --radius-card: 16px;
+      --radius-btn: 12px;
+      --btn-h: 52px;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    /* ── 로고 ── */
+    .logo {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      background: linear-gradient(135deg, #C8A97E, #f0d5a8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 40px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .logo span {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      -webkit-text-fill-color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── 카드 ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    /* ── 탭 ── */
+    .tabs {
+      display: flex;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 28px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: -0.01em;
+    }
+
+    .tab-btn.active {
+      background: var(--card);
+      color: var(--text);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    /* ── 폼 패널 ── */
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+
+    /* ── 입력 필드 ── */
+    .field {
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .field input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 0 16px;
+      height: 50px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .field input:focus {
+      border-color: var(--gold);
+    }
+
+    .field input::placeholder {
+      color: #333;
+    }
+
+    /* ── 선택 라벨 ── */
+    .optional-tag {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted);
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* ── 에러 메시지 ── */
+    .error-msg {
+      font-size: 12px;
+      color: #e74c3c;
+      margin-top: 8px;
+      min-height: 18px;
+    }
+
+    /* ── 버튼 ── */
+    .btn-primary {
+      width: 100%;
+      height: var(--btn-h);
+      background: var(--gold);
+      border: none;
+      border-radius: var(--radius-btn);
+      color: #0a0a0a;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      margin-top: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── 구분선 ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider span {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── 카카오 버튼 ── */
+    .btn-kakao {
+      width: 100%;
+      height: var(--btn-h);
+      background: var(--kakao);
+      border: none;
+      border-radius: var(--radius-btn);
+      color: #3C1E1E;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-kakao:hover { opacity: 0.9; }
+    .btn-kakao:active { transform: scale(0.98); }
+
+    .kakao-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* ── 비밀번호 찾기 ── */
+    .forgot-pw {
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .forgot-pw a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .forgot-pw a:hover { color: var(--gold); }
+
+    /* ── 토스트 ── */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      z-index: 999;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── 로딩 스피너 ── */
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(10,10,10,0.3);
+      border-top-color: #0a0a0a;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 440px) {
+      .card { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo" onclick="location.href='index.html'">
+    MISSOLET GUIDE
+    <span>F&B 재무 진단 도구</span>
+  </div>
+
+  <div class="card">
+    <!-- 탭 -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">로그인</button>
+      <button class="tab-btn" id="tab-signup" onclick="switchTab('signup')">회원가입</button>
+    </div>
+
+    <!-- 로그인 폼 -->
+    <div class="form-panel active" id="panel-login">
+      <div class="field">
+        <label>이메일</label>
+        <input type="email" id="login-email" placeholder="example@email.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label>비밀번호</label>
+        <input type="password" id="login-pw" placeholder="비밀번호 입력" autocomplete="current-password" />
+      </div>
+      <div class="error-msg" id="login-error"></div>
+      <button class="btn-primary" id="login-btn" onclick="handleLogin()">로그인</button>
+
+      <div class="divider"><span>또는</span></div>
+      <button class="btn-kakao" onclick="handleKakaoLogin()">
+        <svg class="kakao-icon" viewBox="0 0 24 24" fill="#3C1E1E">
+          <path d="M12 3C6.477 3 2 6.477 2 10.857c0 2.742 1.656 5.157 4.164 6.6L5.1 21l5.09-2.755A11.5 11.5 0 0012 18.714c5.523 0 10-3.477 10-7.857S17.523 3 12 3z"/>
+        </svg>
+        카카오로 시작하기
+      </button>
+
+      <div class="forgot-pw">
+        <a href="#" onclick="handleForgotPw(event)">비밀번호를 잊으셨나요?</a>
+      </div>
+    </div>
+
+    <!-- 회원가입 폼 -->
+    <div class="form-panel" id="panel-signup">
+      <div class="field">
+        <label>이메일</label>
+        <input type="email" id="signup-email" placeholder="example@email.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label>비밀번호</label>
+        <input type="password" id="signup-pw" placeholder="8자 이상" autocomplete="new-password" />
+      </div>
+      <div class="field">
+        <label>비밀번호 확인</label>
+        <input type="password" id="signup-pw2" placeholder="비밀번호 재입력" autocomplete="new-password" />
+      </div>
+      <div class="field">
+        <label>가게명 <span class="optional-tag">선택</span></label>
+        <input type="text" id="signup-store" placeholder="가게 이름을 입력해주세요" />
+      </div>
+      <div class="error-msg" id="signup-error"></div>
+      <button class="btn-primary" id="signup-btn" onclick="handleSignup()">가입하기</button>
+
+      <div class="divider"><span>또는</span></div>
+      <button class="btn-kakao" onclick="handleKakaoLogin()">
+        <svg class="kakao-icon" viewBox="0 0 24 24" fill="#3C1E1E">
+          <path d="M12 3C6.477 3 2 6.477 2 10.857c0 2.742 1.656 5.157 4.164 6.6L5.1 21l5.09-2.755A11.5 11.5 0 0012 18.714c5.523 0 10-3.477 10-7.857S17.523 3 12 3z"/>
+        </svg>
+        카카오로 시작하기
+      </button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ================================================
+       SUPABASE CONFIG
+       SUPABASE_CONFIG_START
+    ================================================ */
+    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+    /* SUPABASE_CONFIG_END */
+
+    /* ================================================
+       GA4 CONFIG
+    ================================================ */
+    const GA_MEASUREMENT_ID = 'G-PLACEHOLDER';
+
+    /* ── Supabase 초기화 ── */
+    let supabase = null;
+    try {
+      if (SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co') {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch(e) {
+      console.warn('[Supabase] 초기화 실패 — 플레이스홀더 설정을 교체해주세요', e);
+    }
+
+    /* ── GA4 이벤트 헬퍼 ── */
+    function gtagEvent(name, params) {
+      if (typeof gtag === 'function') {
+        gtag('event', name, params || {});
+      }
+    }
+
+    /* ── 이미 로그인 상태면 마이페이지로 ── */
+    (async function checkSession() {
+      if (!supabase) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = 'mypage.html';
+      }
+    })();
+
+    /* ── 탭 전환 ── */
+    function switchTab(tab) {
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+      document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+      document.getElementById('panel-signup').classList.toggle('active', tab === 'signup');
+      document.getElementById('login-error').textContent = '';
+      document.getElementById('signup-error').textContent = '';
+    }
+
+    /* ── 토스트 ── */
+    function showToast(msg, duration) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), duration || 2400);
+    }
+
+    /* ── 로그인 ── */
+    async function handleLogin() {
+      const email = document.getElementById('login-email').value.trim();
+      const pw    = document.getElementById('login-pw').value;
+      const errEl = document.getElementById('login-error');
+      const btn   = document.getElementById('login-btn');
+
+      errEl.textContent = '';
+
+      if (!email || !pw) {
+        errEl.textContent = '이메일과 비밀번호를 입력해주세요.';
+        return;
+      }
+
+      // GA4 이벤트
+      gtagEvent('login_click', { method: 'email' });
+
+      if (!supabase) {
+        showToast('⚠️ Supabase 설정이 필요합니다 (SUPABASE_URL 교체)');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pw });
+
+      btn.disabled = false;
+      btn.innerHTML = '로그인';
+
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          errEl.textContent = '이메일 또는 비밀번호가 올바르지 않아요.';
+        } else {
+          errEl.textContent = error.message;
+        }
+        return;
+      }
+
+      showToast('✅ 로그인 성공!');
+      setTimeout(() => { window.location.href = 'mypage.html'; }, 800);
+    }
+
+    /* ── 회원가입 ── */
+    async function handleSignup() {
+      const email  = document.getElementById('signup-email').value.trim();
+      const pw     = document.getElementById('signup-pw').value;
+      const pw2    = document.getElementById('signup-pw2').value;
+      const store  = document.getElementById('signup-store').value.trim();
+      const errEl  = document.getElementById('signup-error');
+      const btn    = document.getElementById('signup-btn');
+
+      errEl.textContent = '';
+
+      if (!email || !pw || !pw2) {
+        errEl.textContent = '이메일과 비밀번호를 모두 입력해주세요.';
+        return;
+      }
+      if (pw.length < 8) {
+        errEl.textContent = '비밀번호는 8자 이상이어야 해요.';
+        return;
+      }
+      if (pw !== pw2) {
+        errEl.textContent = '비밀번호가 일치하지 않아요.';
+        return;
+      }
+
+      if (!supabase) {
+        showToast('⚠️ Supabase 설정이 필요합니다 (SUPABASE_URL 교체)');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password: pw,
+        options: { data: { store_name: store } }
+      });
+
+      btn.disabled = false;
+      btn.innerHTML = '가입하기';
+
+      if (error) {
+        if (error.message.includes('already registered')) {
+          errEl.textContent = '이미 가입된 이메일이에요.';
+        } else {
+          errEl.textContent = error.message;
+        }
+        return;
+      }
+
+      showToast('📧 확인 이메일을 보냈어요. 메일함을 확인해주세요!', 4000);
+    }
+
+    /* ── 카카오 로그인 (버튼만 — 연동 나중에) ── */
+    function handleKakaoLogin() {
+      gtagEvent('login_click', { method: 'kakao' });
+      showToast('🟡 카카오 연동 준비 중이에요. 조금만 기다려주세요!', 3000);
+    }
+
+    /* ── 비밀번호 찾기 ── */
+    async function handleForgotPw(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      if (!email) {
+        showToast('이메일을 먼저 입력해주세요.');
+        return;
+      }
+      if (!supabase) {
+        showToast('⚠️ Supabase 설정이 필요합니다');
+        return;
+      }
+      const { error } = await supabase.auth.resetPasswordForEmail(email);
+      if (error) {
+        showToast('오류가 발생했어요: ' + error.message);
+      } else {
+        showToast('📧 비밀번호 재설정 링크를 보냈어요!', 3500);
+      }
+    }
+
+    /* ── Enter 키 ── */
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const loginPanel = document.getElementById('panel-login');
+        if (loginPanel.classList.contains('active')) handleLogin();
+        else handleSignup();
+      }
+    });
+  </script>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', GA_MEASUREMENT_ID || 'G-PLACEHOLDER');
+  </script>
+</body>
+</html>

@@ -5,6 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>미솔랭 가이드 — 내 월급 보러가기</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+
+  <!-- Google Analytics 4 -->
+  <script>
+    /* GA4 Config — 측정 ID를 실제 값으로 교체하세요 */
+    const GA_MEASUREMENT_ID = 'G-PLACEHOLDER';
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', GA_MEASUREMENT_ID);
+  </script>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 
@@ -591,8 +608,9 @@
   <div class="wrapper">
 
     <!-- 헤더 -->
-    <div class="header">
+    <div class="header" style="justify-content: space-between;">
       <div class="header-badge">🟣 <span>미솔랭 가이드</span> &nbsp;BETA</div>
+      <a href="mypage.html" id="header-mypage-link" style="font-size:12px; color:#C8A97E; font-weight:600; text-decoration:none; letter-spacing:0.02em; display:none;">마이페이지</a>
     </div>
 
     <div class="page-title">내 월급 보러가기</div>
@@ -941,6 +959,70 @@
   </div>
 
   <script>
+    /* ================================================
+       SUPABASE CONFIG
+       SUPABASE_CONFIG_START
+    ================================================ */
+    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+    /* SUPABASE_CONFIG_END */
+
+    /* ── Supabase 초기화 ── */
+    let supabase = null;
+    try {
+      if (SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co') {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch(e) {
+      console.warn('[Supabase] 초기화 실패', e);
+    }
+
+    /* ── GA4 이벤트 헬퍼 ── */
+    function gtagEvent(name, params) {
+      if (typeof gtag === 'function') gtag('event', name, params || {});
+    }
+
+    /* ── app_open 이벤트 발사 ── */
+    gtagEvent('app_open', { page: '내월급보러가기' });
+
+    /* ── 로그인 상태 확인 → 마이페이지 버튼 표시 ── */
+    (async function checkAuthState() {
+      if (!supabase) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const mypageLink = document.getElementById('header-mypage-link');
+        if (mypageLink) mypageLink.style.display = 'inline';
+      }
+    })();
+
+    /* ── 리뷰 모드 (마이페이지에서 다시보기) ── */
+    (function checkReviewMode() {
+      if (!location.search.includes('review=1')) return;
+      const data = sessionStorage.getItem('missolet_review');
+      if (!data) return;
+      try {
+        const item = JSON.parse(data);
+        sessionStorage.removeItem('missolet_review');
+        // 다음 틱에 데이터 채우기 (DOM 준비 후)
+        window.addEventListener('DOMContentLoaded', () => {
+          const fillFields = [
+            'revenue','food_cost','labor','rent','delivery','etc',
+            'electric','gas','water','ins_noran','ins_fire','ins_labor','ins_etc',
+            'card_supply','card_mkt','card_etc'
+          ];
+          fillFields.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && item[id] !== undefined) {
+              el.value = (item[id] || 0).toLocaleString('ko-KR');
+            }
+          });
+          if (item.businessType) document.getElementById('business_type').value = item.businessType;
+          if (item.region) document.getElementById('region').value = item.region;
+          if (typeof calculate === 'function') calculate();
+        });
+      } catch(e) {}
+    })();
+
     const fields = ['revenue', 'food_cost', 'labor', 'rent', 'delivery', 'etc',
                     'electric', 'gas', 'water',
                     'ins_noran', 'ins_fire', 'ins_labor', 'ins_etc',
@@ -1069,9 +1151,15 @@
 
     fields.forEach(attachCommaFormat);
 
-    // 드롭다운 변경 시 재계산
-    document.getElementById('business_type').addEventListener('change', calculate);
-    document.getElementById('region').addEventListener('change', calculate);
+    // 드롭다운 변경 시 재계산 + GA4 이벤트
+    document.getElementById('business_type').addEventListener('change', () => {
+      gtagEvent('calculate_click', { trigger: 'business_type_change' });
+      calculate();
+    });
+    document.getElementById('region').addEventListener('change', () => {
+      gtagEvent('calculate_click', { trigger: 'region_change' });
+      calculate();
+    });
 
     // 한글 표기 연동
     const korMap = {
@@ -1187,6 +1275,8 @@
 
     // ── 계산 ──
     function calculate() {
+      // GA4: calculate_click (사용자 입력 시에만 — 드롭다운/인풋 변경)
+      // 이벤트는 버튼 클릭이 아닌 자동 계산이므로 change 이벤트에서 별도 트래킹
       const businessType = document.getElementById('business_type').value;
       const region       = document.getElementById('region').value;
 
@@ -1401,7 +1491,10 @@
     }
 
     // ── 저장 버튼 ──
-    document.getElementById('save_btn').addEventListener('click', () => {
+    document.getElementById('save_btn').addEventListener('click', async () => {
+      // GA4 이벤트
+      gtagEvent('save_click', { page: '내월급보러가기' });
+
       const businessType = document.getElementById('business_type').value;
       const region       = document.getElementById('region').value;
 
@@ -1483,6 +1576,31 @@
       const btn = document.getElementById('save_btn');
       btn.textContent = '✅ 저장됐어요';
       setTimeout(() => { btn.textContent = '💾 이번 달 저장'; }, 1800);
+
+      // ── Supabase DB에도 저장 (로그인 상태일 때만) ──
+      if (supabase) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            const profitPct = revenue > 0 ? ((salary / revenue) * 100).toFixed(2) : null;
+            const { error: dbError } = await supabase.from('calculations').upsert({
+              user_id: session.user.id,
+              created_at: record.savedAt,
+              업종: businessType,
+              지역: region,
+              매출액: revenue,
+              지출액: totalExpense,
+              순이익률: profitPct ? parseFloat(profitPct) : null
+            }, { onConflict: 'user_id,created_at' });
+
+            if (dbError) {
+              console.warn('[Supabase] DB 저장 실패:', dbError.message);
+            }
+          }
+        } catch(e) {
+          console.warn('[Supabase] 저장 중 오류:', e);
+        }
+      }
     });
 
     // 초기 실행

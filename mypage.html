@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>마이페이지 — MISSOLET GUIDE</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" />
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0A0A0A;
+      --card: #1A1A1A;
+      --border: #2A2A2A;
+      --text: #FFFFFF;
+      --muted: #888888;
+      --gold: #C8A97E;
+      --gold-dim: rgba(200, 169, 126, 0.12);
+      --purple: #9b59b6;
+      --green: #27ae60;
+      --red: #e74c3c;
+      --radius-card: 16px;
+      --radius-btn: 12px;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── 헤더 ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 60px;
+    }
+
+    .header-logo {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      background: linear-gradient(135deg, #C8A97E, #f0d5a8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .logout-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* ── 메인 레이아웃 ── */
+    main {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    /* ── 섹션 제목 ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    /* ── 카드 공통 ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      margin-bottom: 12px;
+    }
+
+    /* ── 프로필 카드 ── */
+    .profile-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .profile-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--gold-dim);
+      border: 1px solid rgba(200,169,126,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .profile-info {}
+
+    .profile-email {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .profile-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .profile-tag {
+      font-size: 11px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    .profile-tag.gold {
+      color: var(--gold);
+      background: var(--gold-dim);
+    }
+
+    /* ── 통계 카드 그리드 ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 14px;
+      text-align: center;
+    }
+
+    .stat-icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--gold);
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    /* ── 히스토리 ── */
+    .history-empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 32px 0;
+    }
+
+    .history-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+
+    .history-card:hover {
+      border-color: rgba(200,169,126,0.3);
+    }
+
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .history-date {
+      font-size: 12px;
+      color: var(--gold);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .history-diagnosis {
+      font-size: 11px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+
+    .history-salary {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--purple);
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .history-salary.neg { color: var(--red); }
+
+    .history-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .h-tag {
+      font-size: 11px;
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+
+    .review-btn {
+      background: transparent;
+      border: 1px solid rgba(200,169,126,0.3);
+      border-radius: 8px;
+      color: var(--gold);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .review-btn:hover {
+      background: var(--gold-dim);
+    }
+
+    /* ── 하단 CTA ── */
+    .cta-wrap {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 20px;
+      background: linear-gradient(to top, var(--bg) 70%, transparent);
+    }
+
+    .cta-btn {
+      display: block;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      height: 52px;
+      background: var(--gold);
+      border: none;
+      border-radius: 14px;
+      color: #0a0a0a;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .cta-btn:hover { opacity: 0.9; }
+
+    /* ── 로딩 ── */
+    #loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .spinner-large {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── 토스트 ── */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+      z-index: 999;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 380px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-card:last-child { grid-column: span 2; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 로딩 오버레이 -->
+  <div id="loading-overlay">
+    <div class="spinner-large"></div>
+  </div>
+
+  <!-- 헤더 -->
+  <header>
+    <a href="index.html" class="header-logo">MISSOLET GUIDE</a>
+    <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+  </header>
+
+  <!-- 메인 -->
+  <main id="main-content" style="display:none;">
+
+    <!-- 프로필 -->
+    <div class="section-label" style="margin-top: 20px;">내 계정</div>
+    <div class="card" style="margin-bottom: 28px;">
+      <div class="profile-card">
+        <div class="profile-avatar">👤</div>
+        <div class="profile-info">
+          <div class="profile-email" id="profile-email">—</div>
+          <div class="profile-meta">
+            <span class="profile-tag" id="profile-joined">가입일 로딩 중</span>
+            <span class="profile-tag gold">무료 플랜</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 통계 -->
+    <div class="section-label">활동 통계</div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">💾</div>
+        <div class="stat-value" id="stat-count">0</div>
+        <div class="stat-label">저장한 기록</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🗓</div>
+        <div class="stat-value" id="stat-lastvisit" style="font-size:14px; padding-top:4px;">—</div>
+        <div class="stat-label">마지막 방문</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🛠</div>
+        <div class="stat-value" id="stat-tools">1</div>
+        <div class="stat-label">사용한 도구</div>
+      </div>
+    </div>
+
+    <!-- 저장 기록 -->
+    <div class="section-label">내 저장 기록</div>
+    <div id="history-list">
+      <div class="history-empty" id="history-empty">아직 저장된 기록이 없어요<br/><span style="font-size:12px; margin-top:4px; display:block;">내월급보러가기에서 계산 후 저장해보세요</span></div>
+    </div>
+
+    <!-- 여백 (하단 CTA 공간) -->
+    <div style="height: 80px;"></div>
+
+  </main>
+
+  <!-- 하단 CTA -->
+  <div class="cta-wrap" id="cta-wrap" style="display:none;">
+    <a href="내월급보러가기.html" class="cta-btn">
+      💰 내 월급 계산하러 가기
+    </a>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ================================================
+       SUPABASE CONFIG
+       SUPABASE_CONFIG_START
+    ================================================ */
+    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+    /* SUPABASE_CONFIG_END */
+
+    /* ================================================
+       GA4 CONFIG
+    ================================================ */
+    const GA_MEASUREMENT_ID = 'G-PLACEHOLDER';
+
+    /* ── Supabase 초기화 ── */
+    let supabase = null;
+    try {
+      if (SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co') {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch(e) {
+      console.warn('[Supabase] 초기화 실패', e);
+    }
+
+    /* ── GA4 이벤트 헬퍼 ── */
+    function gtagEvent(name, params) {
+      if (typeof gtag === 'function') gtag('event', name, params || {});
+    }
+
+    /* ── 토스트 ── */
+    function showToast(msg, duration) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), duration || 2400);
+    }
+
+    /* ── 날짜 포맷 ── */
+    function formatDate(isoStr) {
+      if (!isoStr) return '—';
+      const d = new Date(isoStr);
+      return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    /* ── 로컬스토리지 히스토리 읽기 ── */
+    function getHistory() {
+      try { return JSON.parse(localStorage.getItem('missolet_history') || '[]'); }
+      catch { return []; }
+    }
+
+    const BIZ_NAMES = {
+      burger:'버거/패스트푸드', korean:'한식당', cafe:'카페', chicken:'치킨',
+      pizza:'피자', general:'일반 음식점', japanese:'일식', chinese:'중식',
+      bunsik:'분식', bar:'술집/포차', convenience:'편의점', meat:'고깃집'
+    };
+
+    const REG_NAMES = {
+      seoul:'서울', busan:'부산', daegu:'대구', incheon:'인천', gwangju:'광주',
+      daejeon:'대전', ulsan:'울산', sejong:'세종', gyeonggi:'경기', gangwon:'강원',
+      chungbuk:'충북', chungnam:'충남', jeonbuk:'전북', jeonnam:'전남',
+      gyeongbuk:'경북', gyeongnam:'경남', jeju:'제주'
+    };
+
+    /* ── 히스토리 렌더링 ── */
+    function renderHistory(list) {
+      const container = document.getElementById('history-list');
+      const empty = document.getElementById('history-empty');
+
+      // 기존 카드 제거
+      container.querySelectorAll('.history-card').forEach(el => el.remove());
+
+      if (!list || list.length === 0) {
+        if (empty) empty.style.display = 'block';
+        return;
+      }
+      if (empty) empty.style.display = 'none';
+
+      [...list].reverse().forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'history-card';
+
+        const bizName = BIZ_NAMES[item.businessType] || '';
+        const regName = REG_NAMES[item.region] || '';
+        const salaryClass = item.salary < 0 ? 'history-salary neg' : 'history-salary';
+        const sign = item.salary < 0 ? '-' : '';
+
+        const profitPct = item.revenue > 0
+          ? ((item.salary / item.revenue) * 100).toFixed(1) + '%'
+          : '—';
+
+        card.innerHTML = `
+          <div class="history-row">
+            <div class="history-date">${item.year}년 ${item.month}월${bizName ? ' · ' + bizName : ''}${regName ? ' · ' + regName : ''}</div>
+            <div class="history-diagnosis">${item.diagnosis || '—'}</div>
+          </div>
+          <div class="${salaryClass}">${sign}${(item.salary || 0).toLocaleString('ko-KR')}원</div>
+          <div class="history-tags">
+            <span class="h-tag">매출 ${(item.revenue||0).toLocaleString('ko-KR')}원</span>
+            <span class="h-tag">원가율 ${item.foodPct || '—'}</span>
+            <span class="h-tag">순이익률 ${profitPct}</span>
+            <span class="h-tag">Prime ${item.primeCost || '—'}</span>
+          </div>
+          <button class="review-btn" onclick="reviewRecord(${JSON.stringify(item).replace(/"/g,'&quot;')})">다시보기 →</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    /* ── 다시보기 ── */
+    function reviewRecord(item) {
+      // 내월급보러가기.html로 데이터 전달 (sessionStorage)
+      sessionStorage.setItem('missolet_review', JSON.stringify(item));
+      window.location.href = '내월급보러가기.html?review=1';
+    }
+
+    /* ── 마지막 방문 업데이트 ── */
+    function updateLastVisit() {
+      const now = new Date().toISOString();
+      localStorage.setItem('missolet_last_visit', now);
+    }
+
+    /* ── 마지막 방문 읽기 ── */
+    function getLastVisit() {
+      const v = localStorage.getItem('missolet_last_visit');
+      if (!v) return '오늘';
+      const d = new Date(v);
+      const today = new Date();
+      const diff = Math.floor((today - d) / (1000 * 60 * 60 * 24));
+      if (diff === 0) return '오늘';
+      if (diff === 1) return '어제';
+      return diff + '일 전';
+    }
+
+    /* ── 메인 초기화 ── */
+    async function init() {
+      const overlay = document.getElementById('loading-overlay');
+      const mainContent = document.getElementById('main-content');
+      const ctaWrap = document.getElementById('cta-wrap');
+
+      // Supabase 없으면 로컬스토리지만으로 표시
+      if (!supabase) {
+        overlay.style.display = 'none';
+        mainContent.style.display = 'block';
+        ctaWrap.style.display = 'block';
+
+        document.getElementById('profile-email').textContent = '게스트 모드';
+        document.getElementById('profile-joined').textContent = 'Supabase 미연동';
+
+        const history = getHistory();
+        document.getElementById('stat-count').textContent = history.length;
+        document.getElementById('stat-lastvisit').textContent = getLastVisit();
+        updateLastVisit();
+        renderHistory(history);
+        return;
+      }
+
+      // 세션 확인
+      const { data: { session }, error } = await supabase.auth.getSession();
+
+      if (!session) {
+        // 비로그인 → 리다이렉트
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // 로그인 상태
+      const user = session.user;
+
+      overlay.style.display = 'none';
+      mainContent.style.display = 'block';
+      ctaWrap.style.display = 'block';
+
+      // 프로필 표시
+      document.getElementById('profile-email').textContent = user.email || '—';
+      document.getElementById('profile-joined').textContent = '가입일 ' + formatDate(user.created_at);
+
+      // 통계
+      const history = getHistory();
+      document.getElementById('stat-count').textContent = history.length;
+      document.getElementById('stat-lastvisit').textContent = getLastVisit();
+      updateLastVisit();
+      renderHistory(history);
+    }
+
+    /* ── 로그아웃 ── */
+    async function handleLogout() {
+      if (!supabase) {
+        showToast('⚠️ Supabase 미연동 상태입니다.');
+        return;
+      }
+      await supabase.auth.signOut();
+      window.location.href = 'login.html';
+    }
+
+    /* ── 실행 ── */
+    init();
+  </script>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', GA_MEASUREMENT_ID || 'G-PLACEHOLDER');
+  </script>
+</body>
+</html>
