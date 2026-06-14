@@ -440,19 +440,19 @@
        SUPABASE CONFIG
        SUPABASE_CONFIG_START
     ================================================ */
-    const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
-    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+    const SUPABASE_URL = 'https://knmjxctrrfhvyixtlrac.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_g-wGJa_SLyMTC480nnxO5A_hDKloW0Z';
     /* SUPABASE_CONFIG_END */
 
     /* ================================================
        GA4 CONFIG
     ================================================ */
-    const GA_MEASUREMENT_ID = 'G-PLACEHOLDER';
+    const GA_MEASUREMENT_ID = 'G-SLELGVBL1L';
 
     /* ── Supabase 초기화 ── */
     let supabase = null;
     try {
-      if (SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co') {
+      if (SUPABASE_URL !== 'https://knmjxctrrfhvyixtlrac.supabase.co') {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
     } catch(e) {
@@ -634,12 +634,12 @@
   </script>
 
   <!-- Google Analytics 4 -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PLACEHOLDER"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SLELGVBL1L"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){ dataLayer.push(arguments); }
     gtag('js', new Date());
-    gtag('config', GA_MEASUREMENT_ID || 'G-PLACEHOLDER');
+    gtag('config', GA_MEASUREMENT_ID || 'G-SLELGVBL1L');
   </script>
 </body>
 </html>
