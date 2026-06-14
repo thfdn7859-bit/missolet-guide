@@ -14,13 +14,17 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #0A0A0A;
-      --card: #141414;
-      --border: #2A2A2A;
+      --bg: #060F0A;
+      --card: #0D1A12;
+      --border: #1A3024;
       --text: #FFFFFF;
-      --muted: #888888;
-      --gold: #C8A97E;
-      --gold-dim: rgba(200, 169, 126, 0.15);
+      --muted: #7A9E8A;
+      --green: #1B4D35;
+      --green-bright: #2D7A52;
+      --green-light: #3CAF73;
+      --accent: #2D7A52;
+      --accent-hover: #3CAF73;
+      --accent-dim: rgba(45, 122, 82, 0.15);
       --kakao: #FEE500;
       --radius-card: 16px;
       --radius-btn: 12px;
@@ -48,7 +52,7 @@
       font-size: 13px;
       font-weight: 800;
       letter-spacing: 0.18em;
-      background: linear-gradient(135deg, #C8A97E, #f0d5a8);
+      background: linear-gradient(135deg, #3CAF73, #2D7A52);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -143,7 +147,7 @@
     }
 
     .field input:focus {
-      border-color: var(--gold);
+      border-color: var(--accent);
     }
 
     .field input::placeholder {
@@ -174,10 +178,10 @@
     .btn-primary {
       width: 100%;
       height: var(--btn-h);
-      background: var(--gold);
+      background: var(--accent);
       border: none;
       border-radius: var(--radius-btn);
-      color: #0a0a0a;
+      color: #FFFFFF;
       font-family: inherit;
       font-size: 15px;
       font-weight: 700;
@@ -252,7 +256,7 @@
       transition: color 0.2s;
     }
 
-    .forgot-pw a:hover { color: var(--gold); }
+    .forgot-pw a:hover { color: var(--accent); }
 
     /* ── 토스트 ── */
     .toast {
@@ -285,7 +289,7 @@
       width: 16px;
       height: 16px;
       border: 2px solid rgba(10,10,10,0.3);
-      border-top-color: #0a0a0a;
+      border-top-color: #FFFFFF;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
       vertical-align: middle;
@@ -388,7 +392,7 @@
     /* ── Supabase 초기화 ── */
     let supabase = null;
     try {
-      if (SUPABASE_URL !== 'https://knmjxctrrfhvyixtlrac.supabase.co') {
+      if (SUPABASE_URL && SUPABASE_URL.startsWith('https://')) {
         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
     } catch(e) {
