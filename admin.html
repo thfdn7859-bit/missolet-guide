@@ -31,13 +31,13 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #060F0A;
-      --card: #0D1A12;
-      --border: #1A3024;
-      --gold: #2D7A52;
-      --gold-dim: rgba(45,122,82,0.15);
+      --bg: #0A080F;
+      --card: #130D1E;
+      --border: #2A1D3E;
+      --gold: #7C3AED;
+      --gold-dim: rgba(124, 58, 237,0.15);
       --text: #E8E8E8;
-      --muted: #7A9E8A;
+      --muted: #9B87B8;
       --red: #E05C5C;
       --radius: 16px;
     }
@@ -108,7 +108,7 @@
     .login-btn {
       width: 100%;
       background: var(--gold);
-      color: #0A0A0A;
+      color: #0A080F;
       border: none;
       border-radius: 10px;
       font-size: 15px;
@@ -338,7 +338,7 @@
     }
 
     tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba(200,169,126,0.04); }
+    tr:hover td { background: rgba(124, 58, 237,0.04); }
 
     .td-date { color: var(--muted); font-size: 12px; }
     .td-positive { color: #6DBE8C; }
@@ -597,8 +597,8 @@
         datasets: [{
           label: '저장 횟수',
           data: values,
-          backgroundColor: 'rgba(200,169,126,0.75)',
-          borderColor: '#3CAF73',
+          backgroundColor: 'rgba(124, 58, 237,0.75)',
+          borderColor: '#9B59B6',
           borderWidth: 1,
           borderRadius: 4,
         }]
@@ -615,7 +615,7 @@
         },
         scales: {
           x: {
-            ticks: { color: '#888', font: { size: 11 } },
+            ticks: { color: '#9B87B8', font: { size: 11 } },
             grid: { color: 'rgba(42,42,42,0.8)' },
           },
           y: {
@@ -699,9 +699,9 @@
         datasets: [{
           label: '저장 횟수',
           data: values,
-          borderColor: '#3CAF73',
-          backgroundColor: 'rgba(200,169,126,0.12)',
-          pointBackgroundColor: '#3CAF73',
+          borderColor: '#9B59B6',
+          backgroundColor: 'rgba(124, 58, 237,0.12)',
+          pointBackgroundColor: '#9B59B6',
           pointRadius: 3,
           pointHoverRadius: 5,
           fill: true,
@@ -720,7 +720,7 @@
         scales: {
           x: {
             ticks: {
-              color: '#888',
+              color: '#9B87B8',
               font: { size: 10 },
               maxTicksLimit: 10,
               maxRotation: 0,
@@ -729,7 +729,7 @@
           },
           y: {
             beginAtZero: true,
-            ticks: { color: '#888', font: { size: 11 }, stepSize: 1 },
+            ticks: { color: '#9B87B8', font: { size: 11 }, stepSize: 1 },
             grid: { color: 'rgba(42,42,42,0.8)' },
           }
         }
