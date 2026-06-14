@@ -8,7 +8,7 @@
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet" />
 
   <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Supabase via ESM (see module script below) -->
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -341,14 +341,14 @@
       bottom: 80px;
       left: 50%;
       transform: translateX(-50%) translateY(80px);
-      background: #1a1a1a;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 20px;
+      background: #1E1433;
+      border: 1px solid rgba(124,58,237,0.5);
+      border-radius: 40px;
+      padding: 12px 22px;
       font-size: 14px;
       font-weight: 500;
-      color: var(--text);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      color: #E9D5FF;
+      box-shadow: 0 8px 32px rgba(124,58,237,0.25);
       opacity: 0;
       transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
       z-index: 999;
@@ -437,29 +437,14 @@
 
   <div class="toast" id="toast"></div>
 
-  <script>
-    /* ================================================
-       SUPABASE CONFIG
-       SUPABASE_CONFIG_START
-    ================================================ */
-    const SUPABASE_URL = 'https://knmjxctrrfhvyixtlrac.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_g-wGJa_SLyMTC480nnxO5A_hDKloW0Z';
-    /* SUPABASE_CONFIG_END */
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-    /* ================================================
-       GA4 CONFIG
-    ================================================ */
-    const GA_MEASUREMENT_ID = 'G-SLELGVBL1L';
+    const SUPABASE_URL = 'https://knmjxctrrfhvyixtlrac.supabase.co'
+    const SUPABASE_ANON_KEY = 'sb_publishable_g-wGJa_SLyMTC480nnxO5A_hDKloW0Z'
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
-    /* ── Supabase 초기화 ── */
-    let supabase = null;
-    try {
-      if (SUPABASE_URL && SUPABASE_URL.startsWith('https://')) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      }
-    } catch(e) {
-      console.warn('[Supabase] 초기화 실패', e);
-    }
+    const GA_MEASUREMENT_ID = 'G-SLELGVBL1L'
 
     /* ── GA4 이벤트 헬퍼 ── */
     function gtagEvent(name, params) {
