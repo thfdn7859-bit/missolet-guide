@@ -376,7 +376,7 @@
   <!-- 헤더 -->
   <header>
     <a href="index.html" class="header-logo">MISSOLET GUIDE</a>
-    <button class="logout-btn" onclick="handleLogout()">로그아웃</button>
+    <button class="logout-btn" id="logout-btn">로그아웃</button>
   </header>
 
   <!-- 메인 -->
@@ -531,7 +531,7 @@
     }
 
     /* ── 다시보기 ── */
-    function reviewRecord(item) {
+    window.reviewRecord = function reviewRecord(item) {
       // 내월급보러가기.html로 데이터 전달 (sessionStorage)
       sessionStorage.setItem('missolet_review', JSON.stringify(item));
       window.location.href = '내월급보러가기.html?review=1';
@@ -607,17 +607,13 @@
     }
 
     /* ── 로그아웃 ── */
-    async function handleLogout() {
-      if (!supabase) {
-        showToast('⚠️ Supabase 미연동 상태입니다.');
-        return;
-      }
-      await supabase.auth.signOut();
-      window.location.href = 'login.html';
-    }
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await supabase.auth.signOut()
+      window.location.href = 'login.html'
+    })
 
     /* ── 실행 ── */
-    init();
+    init()
   </script>
 
   <!-- Google Analytics 4 -->
