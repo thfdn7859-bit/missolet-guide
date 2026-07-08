@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메뉴 원가 계산기 — 미솔랭 가이드</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SLELGVBL1L"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-SLELGVBL1L');</script>
+<style>
+:root {
+  --bg: #0A080F;
+  --card: #130D1E;
+  --card2: #1a1228;
+  --border: #2a1f3d;
+  --purple: #7C3AED;
+  --purple2: #9B59B6;
+  --text: #f0eafa;
+  --text2: #a89bc8;
+  --text3: #6b5f88;
+  --green: #22c55e;
+  --red: #ef4444;
+  --yellow: #f59e0b;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'Pretendard Variable','Apple SD Gothic Neo',sans-serif; min-height:100vh; }
+
+header {
+  background: rgba(10,8,15,0.95); border-bottom:1px solid var(--border);
+  padding:16px 24px; display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:100; backdrop-filter:blur(12px);
+}
+.logo { font-size:14px; font-weight:700; color:var(--text); letter-spacing:0.05em; }
+.logo span { color:var(--purple2); }
+.back-btn {
+  font-size:12px; color:var(--text3); text-decoration:none;
+  border:1px solid var(--border); padding:6px 14px; border-radius:8px;
+  transition:all 0.2s;
+}
+.back-btn:hover { color:var(--text); border-color:var(--purple); }
+
+.container { max-width:900px; margin:0 auto; padding:40px 20px 80px; }
+
+h1 { font-size:28px; font-weight:800; margin-bottom:8px; }
+.subtitle { color:var(--text2); font-size:14px; margin-bottom:40px; }
+
+/* 섹션 카드 */
+.section {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:16px; padding:28px; margin-bottom:20px;
+}
+.section-title {
+  font-size:13px; font-weight:700; color:var(--purple2);
+  letter-spacing:0.1em; text-transform:uppercase; margin-bottom:20px;
+  display:flex; align-items:center; gap:8px;
+}
+
+/* 인풋 그리드 */
+.input-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+@media(max-width:600px){ .input-grid { grid-template-columns:1fr; } }
+
+.field { display:flex; flex-direction:column; gap:6px; }
+.field label { font-size:12px; color:var(--text2); font-weight:600; }
+.field input, .field select {
+  background:#0d0918; border:1px solid var(--border);
+  color:var(--text); border-radius:10px; padding:12px 14px;
+  font-size:14px; font-family:inherit; outline:none;
+  transition:border-color 0.2s;
+}
+.field input:focus, .field select:focus { border-color:var(--purple); }
+.field .unit { font-size:11px; color:var(--text3); margin-top:2px; }
+
+/* 재료 추가 */
+.ingredient-list { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+.ingredient-row {
+  display:grid; grid-template-columns:1fr 100px 100px 36px;
+  gap:8px; align-items:center;
+}
+@media(max-width:600px){ .ingredient-row { grid-template-columns:1fr 80px 80px 32px; } }
+.ingredient-row input {
+  background:#0d0918; border:1px solid var(--border);
+  color:var(--text); border-radius:8px; padding:10px 12px;
+  font-size:13px; font-family:inherit; outline:none;
+}
+.ingredient-row input:focus { border-color:var(--purple); }
+.del-btn {
+  background:#1f1030; border:1px solid #3d1f60; color:#a060e0;
+  border-radius:8px; width:36px; height:36px; cursor:pointer;
+  font-size:16px; display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s;
+}
+.del-btn:hover { background:#2a1540; color:#fff; }
+
+.add-btn {
+  background:transparent; border:1px dashed var(--border);
+  color:var(--text3); border-radius:10px; padding:10px;
+  font-size:13px; cursor:pointer; width:100%; font-family:inherit;
+  transition:all 0.2s;
+}
+.add-btn:hover { border-color:var(--purple); color:var(--purple2); }
+
+/* 결과 카드 */
+.result-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+@media(max-width:600px){ .result-grid { grid-template-columns:1fr; } }
+
+.result-card {
+  background:var(--card2); border-radius:12px; padding:20px;
+  border:1px solid var(--border); text-align:center;
+}
+.result-card.highlight { border-color:var(--purple); background:#1a0f2e; }
+.result-card.green   { border-color:#166534; background:#0a1f0f; }
+.result-card.red     { border-color:#7f1d1d; background:#1f0a0a; }
+.result-label { font-size:11px; color:var(--text3); margin-bottom:6px; letter-spacing:0.05em; }
+.result-value { font-size:24px; font-weight:800; }
+.result-value.purple { color:var(--purple2); }
+.result-value.green  { color:var(--green); }
+.result-value.red    { color:var(--red); }
+.result-value.yellow { color:var(--yellow); }
+
+/* 원가율 게이지 */
+.gauge-wrap { margin:20px 0; }
+.gauge-label { display:flex; justify-content:space-between; font-size:12px; color:var(--text2); margin-bottom:8px; }
+.gauge-bar { height:10px; background:#1a1228; border-radius:5px; overflow:hidden; }
+.gauge-fill { height:100%; border-radius:5px; transition:width 0.6s ease; }
+
+/* 분석 텍스트 */
+.analysis {
+  background:#100c1a; border:1px solid var(--border);
+  border-radius:12px; padding:20px; margin-top:16px;
+}
+.analysis-title { font-size:13px; font-weight:700; color:var(--purple2); margin-bottom:12px; }
+.analysis-item { font-size:13px; color:var(--text2); margin-bottom:8px; line-height:1.6; }
+.analysis-item strong { color:var(--text); }
+
+/* 버튼 */
+.calc-btn {
+  background: linear-gradient(135deg, var(--purple), var(--purple2));
+  color:#fff; border:none; border-radius:12px; padding:16px 32px;
+  font-size:15px; font-weight:700; font-family:inherit; cursor:pointer;
+  width:100%; margin-top:8px; transition:all 0.2s;
+  letter-spacing:0.03em;
+}
+.calc-btn:hover { opacity:0.9; transform:translateY(-1px); box-shadow:0 8px 24px rgba(124,58,237,0.3); }
+
+.reset-btn {
+  background:transparent; border:1px solid var(--border); color:var(--text3);
+  border-radius:12px; padding:12px 24px; font-size:13px; font-family:inherit;
+  cursor:pointer; width:100%; margin-top:8px; transition:all 0.2s;
+}
+.reset-btn:hover { border-color:#444; color:var(--text); }
+
+/* 저장 목록 */
+.saved-list { display:flex; flex-direction:column; gap:10px; }
+.saved-item {
+  background:var(--card2); border:1px solid var(--border);
+  border-radius:10px; padding:16px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px;
+}
+.saved-name { font-size:14px; font-weight:600; }
+.saved-meta { font-size:12px; color:var(--text3); margin-top:2px; }
+.saved-rate { font-size:18px; font-weight:800; }
+.saved-actions { display:flex; gap:8px; }
+.saved-load, .saved-del {
+  font-size:11px; padding:5px 10px; border-radius:6px;
+  cursor:pointer; border:1px solid; font-family:inherit; transition:all 0.15s;
+}
+.saved-load { background:transparent; border-color:var(--purple); color:var(--purple2); }
+.saved-load:hover { background:var(--purple); color:#fff; }
+.saved-del  { background:transparent; border-color:#3d1520; color:#e05070; }
+.saved-del:hover { background:#3d1520; }
+
+.empty-msg { color:var(--text3); font-size:13px; text-align:center; padding:20px; }
+
+/* 팁 박스 */
+.tip-box {
+  background:#0e0a1a; border:1px solid #2a1f3d;
+  border-left:3px solid var(--purple); border-radius:0 10px 10px 0;
+  padding:14px 16px; margin-top:12px;
+}
+.tip-box p { font-size:12.5px; color:var(--text2); line-height:1.7; }
+.tip-box strong { color:var(--purple2); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">MISSOLET <span>GUIDE</span></div>
+  <a href="index.html" class="back-btn">← 홈으로</a>
+</header>
+
+<div class="container">
+  <h1>🧮 메뉴 원가 계산기</h1>
+  <p class="subtitle">재료비를 입력하면 원가율·권장 판매가·수익성을 자동 분석해드립니다</p>
+
+  <!-- 메뉴 기본 정보 -->
+  <div class="section">
+    <div class="section-title">🍽️ 메뉴 기본 정보</div>
+    <div class="input-grid">
+      <div class="field">
+        <label>메뉴 이름</label>
+        <input type="text" id="menuName" placeholder="예: 오일리버거 클래식">
+      </div>
+      <div class="field">
+        <label>현재 판매가 (원)</label>
+        <input type="number" id="salePrice" placeholder="예: 14900" min="0">
+      </div>
+      <div class="field">
+        <label>목표 원가율 (%)</label>
+        <input type="number" id="targetRate" value="30" min="1" max="100">
+        <span class="unit">F&B 일반 30~35% / 파인다이닝 20~28%</span>
+      </div>
+      <div class="field">
+        <label>1일 판매량 (개)</label>
+        <input type="number" id="dailySales" placeholder="예: 50" min="0">
+      </div>
+    </div>
+  </div>
+
+  <!-- 재료비 입력 -->
+  <div class="section">
+    <div class="section-title">🥩 재료비 입력</div>
+    <div style="display:grid;grid-template-columns:1fr 100px 100px 36px;gap:8px;margin-bottom:8px;padding:0 2px;">
+      <span style="font-size:11px;color:var(--text3)">재료명</span>
+      <span style="font-size:11px;color:var(--text3)">사용량 (g/ml)</span>
+      <span style="font-size:11px;color:var(--text3)">단가 (원/kg)</span>
+      <span></span>
+    </div>
+    <div class="ingredient-list" id="ingredientList"></div>
+    <button class="add-btn" onclick="addIngredient()">+ 재료 추가</button>
+
+    <div class="tip-box" style="margin-top:16px;">
+      <p><strong>단가 계산법:</strong> 1kg 구매가격을 입력하세요. 예) 소고기 1kg = 28,000원이면 28000 입력.<br>
+      단가 모를 때는 최근 발주 금액 ÷ 구매 중량(kg)으로 계산하세요.</p>
+    </div>
+  </div>
+
+  <!-- 기타 비용 -->
+  <div class="section">
+    <div class="section-title">📦 기타 원가 (선택)</div>
+    <div class="input-grid">
+      <div class="field">
+        <label>포장재·용기 (원/개)</label>
+        <input type="number" id="packagingCost" placeholder="예: 300" min="0">
+      </div>
+      <div class="field">
+        <label>배달수수료 포함 여부</label>
+        <select id="deliveryInclude">
+          <option value="0">포함 안함</option>
+          <option value="9.8">배달의민족 9.8%</option>
+          <option value="9.8">요기요 9.8%</option>
+          <option value="9.8">쿠팡이츠 9.8%</option>
+          <option value="15">직접 입력 (15%)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calculate()">📊 원가 분석하기</button>
+  <button class="reset-btn" onclick="resetAll()">초기화</button>
+
+  <!-- 결과 -->
+  <div class="section" id="resultSection" style="display:none;margin-top:20px;">
+    <div class="section-title">📊 분석 결과</div>
+
+    <div class="result-grid">
+      <div class="result-card highlight">
+        <div class="result-label">재료 원가</div>
+        <div class="result-value purple" id="res-cost">—</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;">원 / 1인분</div>
+      </div>
+      <div class="result-card" id="res-rate-card">
+        <div class="result-label">원가율</div>
+        <div class="result-value" id="res-rate">—</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;">판매가 대비</div>
+      </div>
+      <div class="result-card green">
+        <div class="result-label">1개당 수익</div>
+        <div class="result-value green" id="res-profit">—</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;">원 (수수료 제외)</div>
+      </div>
+    </div>
+
+    <div class="gauge-wrap">
+      <div class="gauge-label">
+        <span>원가율</span>
+        <span id="gauge-text">—</span>
+      </div>
+      <div class="gauge-bar">
+        <div class="gauge-fill" id="gauge-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="result-grid" style="margin-bottom:0;">
+      <div class="result-card">
+        <div class="result-label">권장 최저 판매가</div>
+        <div class="result-value yellow" id="res-min-price">—</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;">원가율 35% 기준</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">권장 최적 판매가</div>
+        <div class="result-value yellow" id="res-opt-price">—</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;">원가율 30% 기준</div>
+      </div>
+      <div class="result-card">
+        <div class="result-label">월 예상 수익</div>
+        <div class="result-value green" id="res-monthly">—</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;">이 메뉴만 (25일 기준)</div>
+      </div>
+    </div>
+
+    <div class="analysis" id="analysisBox"></div>
+
+    <button class="calc-btn" style="margin-top:16px;background:linear-gradient(135deg,#166534,#15803d);" onclick="saveMenu()">💾 이 메뉴 저장하기</button>
+  </div>
+
+  <!-- 저장된 메뉴 비교 -->
+  <div class="section" style="margin-top:20px;">
+    <div class="section-title">📋 저장된 메뉴 비교</div>
+    <div class="saved-list" id="savedList">
+      <div class="empty-msg">저장된 메뉴가 없습니다</div>
+    </div>
+  </div>
+
+  <!-- F&B 원가율 가이드 -->
+  <div class="section" style="margin-top:20px;">
+    <div class="section-title">📚 F&B 원가율 가이드</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div style="background:#0d0918;border:1px solid var(--border);border-radius:10px;padding:16px;">
+        <div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:8px;">✅ 양호 기준</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+          패스트푸드·버거: 28~35%<br>
+          캐주얼 다이닝: 30~38%<br>
+          파인다이닝: 22~30%<br>
+          베이커리·카페: 20~28%<br>
+          술·음료: 15~25%
+        </div>
+      </div>
+      <div style="background:#0d0918;border:1px solid var(--border);border-radius:10px;padding:16px;">
+        <div style="font-size:13px;font-weight:700;color:var(--yellow);margin-bottom:8px;">⚠️ 주의사항</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.8;">
+          원가율만으로 수익성 판단 금지<br>
+          인건비·임대료·수도광열비 별도<br>
+          배달 매출은 수수료 반드시 포함<br>
+          계절·공급 변동으로 단가 변함<br>
+          분기마다 재계산 권장
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <p>
+        <strong>박솔우 셰프의 팁:</strong> 오일리버거 기준 패티(전각+차돌박이) 원가가 전체의 60~70%를 차지합니다.
+        원가를 낮추려면 재료를 줄이는 것보다 <strong>판매량을 늘려 식재료 단가를 낮추는 것</strong>이 브랜드를 지키는 방법입니다.
+        대량 구매 협상, 폐기율 최소화, 로스율 관리가 실질적인 원가 절감의 핵심입니다.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 재료 관리 ──────────────────────────────────────
+let ingredients = [];
+
+function addIngredient(name='', amount='', price='') {
+  const id = Date.now();
+  ingredients.push({ id });
+  renderIngredients();
+  if(name) {
+    document.getElementById(`name-${id}`).value = name;
+    document.getElementById(`amount-${id}`).value = amount;
+    document.getElementById(`price-${id}`).value = price;
+  }
+}
+
+function removeIngredient(id) {
+  ingredients = ingredients.filter(i => i.id !== id);
+  renderIngredients();
+}
+
+function renderIngredients() {
+  const list = document.getElementById('ingredientList');
+  list.innerHTML = ingredients.map(ing => `
+    <div class="ingredient-row">
+      <input type="text" id="name-${ing.id}" placeholder="재료명 (예: 소고기 전각)" />
+      <input type="number" id="amount-${ing.id}" placeholder="g/ml" min="0" />
+      <input type="number" id="price-${ing.id}" placeholder="원/kg" min="0" />
+      <button class="del-btn" onclick="removeIngredient(${ing.id})">×</button>
+    </div>
+  `).join('');
+}
+
+// ── 계산 ──────────────────────────────────────────
+function calculate() {
+  const menuName   = document.getElementById('menuName').value || '메뉴';
+  const salePrice  = parseFloat(document.getElementById('salePrice').value) || 0;
+  const targetRate = parseFloat(document.getElementById('targetRate').value) || 30;
+  const dailySales = parseFloat(document.getElementById('dailySales').value) || 0;
+  const packaging  = parseFloat(document.getElementById('packagingCost').value) || 0;
+  const delivRate  = parseFloat(document.getElementById('deliveryInclude').value) || 0;
+
+  // 재료비 합산
+  let materialCost = 0;
+  let hasIngredient = false;
+  ingredients.forEach(ing => {
+    const amount = parseFloat(document.getElementById(`amount-${ing.id}`)?.value) || 0;
+    const price  = parseFloat(document.getElementById(`price-${ing.id}`)?.value) || 0;
+    if(amount > 0 && price > 0) {
+      materialCost += (amount / 1000) * price;
+      hasIngredient = true;
+    }
+  });
+
+  if(!hasIngredient && packaging === 0) {
+    alert('재료를 최소 1개 이상 입력해주세요.');
+    return;
+  }
+
+  const totalCost = materialCost + packaging;
+  const delivFee  = salePrice * (delivRate / 100);
+  const profit    = salePrice > 0 ? salePrice - totalCost - delivFee : 0;
+  const costRate  = salePrice > 0 ? (totalCost / salePrice) * 100 : 0;
+  const minPrice  = Math.ceil((totalCost / 0.35) / 100) * 100;
+  const optPrice  = Math.ceil((totalCost / 0.30) / 100) * 100;
+  const monthly   = dailySales * profit * 25;
+
+  // 화면 업데이트
+  document.getElementById('res-cost').textContent    = totalCost.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '원';
+  document.getElementById('res-rate').textContent    = costRate.toFixed(1) + '%';
+  document.getElementById('res-profit').textContent  = profit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',') + '원';
+  document.getElementById('res-min-price').textContent = minPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',') + '원';
+  document.getElementById('res-opt-price').textContent = optPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g,',') + '원';
+  document.getElementById('res-monthly').textContent  = monthly > 0 ? (monthly/10000).toFixed(0) + '만원' : '—';
+
+  // 원가율 색상
+  const rateEl = document.getElementById('res-rate');
+  const rateCard = document.getElementById('res-rate-card');
+  if(costRate <= targetRate) {
+    rateEl.className = 'result-value green';
+    rateCard.style.borderColor = '#166534';
+    rateCard.style.background  = '#0a1f0f';
+  } else if(costRate <= targetRate + 5) {
+    rateEl.className = 'result-value yellow';
+    rateCard.style.borderColor = '#78350f';
+    rateCard.style.background  = '#1c1005';
+  } else {
+    rateEl.className = 'result-value red';
+    rateCard.style.borderColor = '#7f1d1d';
+    rateCard.style.background  = '#1f0a0a';
+  }
+
+  // 게이지
+  const gaugeW = Math.min(costRate, 100);
+  const gaugeColor = costRate <= 30 ? '#22c55e' : costRate <= 38 ? '#f59e0b' : '#ef4444';
+  document.getElementById('gauge-fill').style.width = gaugeW + '%';
+  document.getElementById('gauge-fill').style.background = gaugeColor;
+  document.getElementById('gauge-text').textContent = costRate.toFixed(1) + '%';
+
+  // 분석 텍스트
+  const analysisBox = document.getElementById('analysisBox');
+  let msgs = [];
+
+  if(salePrice === 0) {
+    msgs.push('💡 판매가를 입력하면 원가율과 수익성을 분석할 수 있어요.');
+  } else {
+    if(costRate <= targetRate) {
+      msgs.push(`✅ <strong>원가율 ${costRate.toFixed(1)}%</strong> — 목표(${targetRate}%) 이하로 양호합니다.`);
+    } else {
+      msgs.push(`⚠️ <strong>원가율 ${costRate.toFixed(1)}%</strong> — 목표(${targetRate}%)를 ${(costRate-targetRate).toFixed(1)}%p 초과했습니다.`);
+    }
+
+    if(salePrice < minPrice) {
+      msgs.push(`📌 현재 판매가(${salePrice.toLocaleString()}원)가 권장 최저가(${minPrice.toLocaleString()}원)보다 낮습니다. 가격 인상 또는 원가 절감을 검토하세요.`);
+    }
+
+    if(delivRate > 0) {
+      msgs.push(`🛵 배달수수료(${delivRate}%) 적용 시 실제 수익은 <strong>${profit.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g,',')}원</strong>입니다.`);
+    }
+
+    if(dailySales > 0) {
+      msgs.push(`📈 일 ${dailySales}개 기준 월 예상 수익: <strong>${(monthly/10000).toFixed(1)}만원</strong> (이 메뉴만, 25일 기준)`);
+    }
+  }
+
+  analysisBox.innerHTML = `
+    <div class="analysis-title">🔍 분석 요약</div>
+    ${msgs.map(m=>`<div class="analysis-item">${m}</div>`).join('')}
+  `;
+
+  document.getElementById('resultSection').style.display = 'block';
+  document.getElementById('resultSection').scrollIntoView({ behavior:'smooth', block:'start' });
+
+  // 현재 계산 상태 저장 (임시)
+  window._lastCalc = { menuName, salePrice, totalCost, costRate, profit, minPrice, optPrice, monthly, targetRate };
+}
+
+// ── 메뉴 저장 ──────────────────────────────────────
+function saveMenu() {
+  if(!window._lastCalc) return;
+  const saved = JSON.parse(localStorage.getItem('savedMenus') || '[]');
+  saved.unshift({ ...window._lastCalc, savedAt: new Date().toLocaleDateString('ko-KR') });
+  localStorage.setItem('savedMenus', JSON.stringify(saved.slice(0, 20)));
+  renderSaved();
+  alert(`"${window._lastCalc.menuName}" 저장 완료!`);
+}
+
+function loadMenu(idx) {
+  const saved = JSON.parse(localStorage.getItem('savedMenus') || '[]');
+  const m = saved[idx];
+  if(!m) return;
+  document.getElementById('menuName').value   = m.menuName;
+  document.getElementById('salePrice').value  = m.salePrice;
+  document.getElementById('targetRate').value = m.targetRate;
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function deleteMenu(idx) {
+  const saved = JSON.parse(localStorage.getItem('savedMenus') || '[]');
+  saved.splice(idx, 1);
+  localStorage.setItem('savedMenus', JSON.stringify(saved));
+  renderSaved();
+}
+
+function renderSaved() {
+  const saved = JSON.parse(localStorage.getItem('savedMenus') || '[]');
+  const list = document.getElementById('savedList');
+  if(saved.length === 0) {
+    list.innerHTML = '<div class="empty-msg">저장된 메뉴가 없습니다</div>';
+    return;
+  }
+  list.innerHTML = saved.map((m,i) => {
+    const rateColor = m.costRate <= m.targetRate ? '#22c55e' : m.costRate <= m.targetRate+5 ? '#f59e0b' : '#ef4444';
+    return `
+      <div class="saved-item">
+        <div style="flex:1;">
+          <div class="saved-name">${m.menuName}</div>
+          <div class="saved-meta">판매가 ${(m.salePrice||0).toLocaleString()}원 · 원가 ${(m.totalCost||0).toFixed(0)}원 · ${m.savedAt}</div>
+        </div>
+        <div class="saved-rate" style="color:${rateColor}">${(m.costRate||0).toFixed(1)}%</div>
+        <div class="saved-actions">
+          <button class="saved-load" onclick="loadMenu(${i})">불러오기</button>
+          <button class="saved-del"  onclick="deleteMenu(${i})">삭제</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function resetAll() {
+  document.getElementById('menuName').value = '';
+  document.getElementById('salePrice').value = '';
+  document.getElementById('targetRate').value = '30';
+  document.getElementById('dailySales').value = '';
+  document.getElementById('packagingCost').value = '';
+  document.getElementById('deliveryInclude').value = '0';
+  ingredients = [];
+  renderIngredients();
+  document.getElementById('resultSection').style.display = 'none';
+  window._lastCalc = null;
+}
+
+// ── 초기화 ─────────────────────────────────────────
+// 기본 재료 3개 세팅 (오일리버거 예시)
+addIngredient('소고기 전각 패티', 78, 28000);
+addIngredient('차돌박이 패티', 26, 32000);
+addIngredient('번(브리오쉬)', 80, 4000);
+renderSaved();
+</script>
+</body>
+</html>
